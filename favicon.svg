@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Map marker shape -->
+  <path d="M50 5 C25 5 10 25 10 45 C10 70 50 95 50 95 C50 95 90 70 90 45 C90 25 75 5 50 5 Z" fill="url(#grad)"/>
+  <!-- Checkmark inside -->
+  <path d="M35 48 L45 58 L65 38" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

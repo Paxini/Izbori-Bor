@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>Izborni Dan - Bor 2026</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --font-primary: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1e2a3a;
+            --bg-card: #162032;
+            --text-primary: #f0f4f8;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #8b5cf6;
+            --border-color: #2d3a4f;
+            --status-ok: #10b981;
+            --status-warn: #f59e0b;
+            --status-alert: #ef4444;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ===== STATS BAR ===== */
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 20px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            min-height: 72px;
+        }
+
+        .stats-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .municipality-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            white-space: nowrap;
+        }
+
+        .stats-bar-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            justify-content: center;
+            flex-wrap: nowrap;
+            overflow: hidden;
+        }
+
+        .stat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            min-width: 100px;
+            flex-shrink: 0;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            white-space: nowrap;
+        }
+
+        .stat-value.turnout { color: var(--accent-primary); }
+        .stat-value.clock { color: var(--text-primary); font-size: 1.15rem; }
+        .stat-value.positive { color: var(--status-ok); }
+        .stat-value.warning { color: var(--status-warn); }
+
+        .turnout-ring {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+        }
+
+        .turnout-ring svg { transform: rotate(-90deg); }
+
+        .turnout-ring-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        .stats-bar-right {
+            flex-shrink: 0;
+        }
+
+        .sparkline-container {
+            width: 120px;
+            height: 40px;
+        }
+
+        /* ===== MAIN AREA ===== */
+        .main-area {
+            display: grid;
+            grid-template-columns: 55fr 45fr;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        /* ===== MAP PANEL ===== */
+        .map-panel {
+            position: relative;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .map-panel #electionMap {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-legend {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(17, 24, 39, 0.92);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .map-legend-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .map-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            padding: 2px 0;
+        }
+
+        .map-legend-swatch {
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        /* ===== RIGHT PANEL ===== */
+        .right-panel {
+            display: grid;
+            grid-template-rows: 1fr auto;
+            overflow: hidden;
+        }
+
+        /* ===== TURNOUT TABLE ===== */
+        .table-panel {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .table-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .table-controls button {
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .table-controls button:hover,
+        .table-controls button.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .page-indicator {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .table-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .table-scroll::-webkit-scrollbar { width: 4px; }
+        .table-scroll::-webkit-scrollbar-track { background: transparent; }
+        .table-scroll::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+
+        .turnout-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+
+        .turnout-table thead {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .turnout-table th {
+            background: var(--bg-tertiary);
+            padding: 6px 8px;
+            text-align: center;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .turnout-table th:first-child,
+        .turnout-table th:nth-child(2) { text-align: left; }
+
+        .turnout-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid rgba(45, 58, 79, 0.4);
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 0.73rem;
+            transition: background 0.15s;
+        }
+
+        .turnout-table td:first-child { text-align: center; width: 36px; color: var(--text-muted); }
+        .turnout-table td:nth-child(2) { text-align: left; font-family: var(--font-primary); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .turnout-table td:nth-child(3) { color: var(--text-secondary); }
+
+        .turnout-table tbody tr { cursor: pointer; }
+        .turnout-table tbody tr:hover { background: rgba(59, 130, 246, 0.08); }
+        .turnout-table tbody tr.highlighted { background: rgba(59, 130, 246, 0.15); }
+
+        .cell-above-high { background: rgba(16, 185, 129, 0.35); color: #6ee7b7; }
+        .cell-above { background: rgba(16, 185, 129, 0.18); color: #a7f3d0; }
+        .cell-near { background: rgba(148, 163, 184, 0.08); color: var(--text-secondary); }
+        .cell-below { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
+        .cell-below-high { background: rgba(239, 68, 68, 0.35); color: #fca5a5; }
+        .cell-empty { color: var(--text-muted); opacity: 0.4; }
+
+        /* Pinned rows */
+        .turnout-table tbody tr.pinned {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 3px solid var(--accent-secondary);
+        }
+        .turnout-table tbody tr.pinned td:first-child { position: relative; padding-left: 18px; }
+        .turnout-table tbody tr.pinned td:first-child::before {
+            content: '\01F4CC';
+            position: absolute;
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.55rem;
+        }
+        .pin-separator td { height: 2px; background: var(--border-color); padding: 0; }
+        .turnout-table td:first-child { cursor: pointer; }
+        .turnout-table td:first-child:hover { color: var(--accent-secondary); }
+
+        /* Num buffer indicator */
+        .num-buffer-indicator {
+            position: absolute;
+            top: 8px;
+            right: 120px;
+            background: var(--accent-primary);
+            color: white;
+            padding: 4px 14px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+            font-weight: 600;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.15s;
+            pointer-events: none;
+        }
+        .num-buffer-indicator.visible { opacity: 1; }
+
+        /* Trend overlay */
+        .trend-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 14, 23, 0.95);
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+        }
+        .trend-overlay.active { display: flex; }
+        .trend-overlay-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .trend-overlay-header span:first-child {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .trend-overlay-header .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .trend-overlay canvas { flex: 1; width: 100%; }
+
+        /* Keyboard help overlay */
+        .keyboard-help {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 14, 23, 0.92);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .keyboard-help.active { display: flex; }
+        .keyboard-help-inner {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px 36px;
+            max-width: 520px;
+            width: 90%;
+        }
+        .keyboard-help h2 {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        .shortcut-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 16px;
+            font-size: 0.82rem;
+        }
+        .shortcut-key {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            text-align: center;
+            min-width: 32px;
+        }
+        .shortcut-desc { color: var(--text-secondary); }
+
+        /* ===== BOTTOM PANEL ===== */
+        .bottom-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 180px;
+            max-height: 220px;
+        }
+
+        .chart-section, .alerts-section {
+            padding: 10px 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-section {
+            border-right: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .chart-canvas-wrap {
+            width: 100%;
+            height: calc(100% - 22px);
+        }
+
+        .alerts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            overflow: hidden;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.73rem;
+        }
+
+        .alert-item.negative { background: rgba(239, 68, 68, 0.12); }
+        .alert-item.positive { background: rgba(16, 185, 129, 0.12); }
+
+        .alert-bm { font-weight: 600; min-width: 28px; color: var(--text-secondary); }
+        .alert-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); }
+        .alert-delta { font-family: var(--font-mono); font-weight: 600; min-width: 55px; text-align: right; }
+        .alert-delta.negative { color: #f87171; }
+        .alert-delta.positive { color: #34d399; }
+
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 12px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Leaflet tooltip override */
+        .leaflet-tooltip.bm-tooltip {
+            background: rgba(17, 24, 39, 0.95);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            font-size: 0.78rem;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .leaflet-tooltip.bm-tooltip::before { border-top-color: rgba(17, 24, 39, 0.95); }
+        .bm-tooltip b { color: var(--accent-primary); }
+        .bm-tooltip .delta-pos { color: #34d399; }
+        .bm-tooltip .delta-neg { color: #f87171; }
+    </style>
+</head>
+<body>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Učitavanje izbornog dashboarda...</div>
+    </div>
+
+    <div class="dashboard" id="dashboard" style="display: none;">
+        <!-- STATS BAR -->
+        <div class="stats-bar">
+            <div class="stats-bar-left">
+                <div class="municipality-name" id="munName">—</div>
+            </div>
+
+            <div class="stats-bar-center">
+                <div class="stat-card">
+                    <span class="stat-label">Vreme</span>
+                    <span class="stat-value clock" id="clockValue">--:--:--</span>
+                </div>
+
+                <div class="turnout-ring" id="turnoutRing">
+                    <svg width="48" height="48" viewBox="0 0 48 48">
+                        <circle cx="24" cy="24" r="20" fill="none" stroke="var(--bg-tertiary)" stroke-width="4"/>
+                        <circle cx="24" cy="24" r="20" fill="none" stroke="var(--accent-primary)" stroke-width="4"
+                                stroke-dasharray="125.66" stroke-dashoffset="125.66" stroke-linecap="round" id="turnoutArc"/>
+                    </svg>
+                    <div class="turnout-ring-text" id="turnoutRingText">0%</div>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">Izlaznost</span>
+                    <span class="stat-value turnout" id="turnoutPct">0.0%</span>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">Glasalo / Upisano</span>
+                    <span class="stat-value" id="votedCount">0 / 0</span>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">BM prijavilo tokom poslednjeg preseka</span>
+                    <span class="stat-value" id="bmReporting">0 / 0</span>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-label">Projekcija</span>
+                    <span class="stat-value warning" id="projectedPct">—</span>
+                </div>
+            </div>
+
+            <div class="stats-bar-right">
+                <svg class="sparkline-container" id="sparkline" viewBox="0 0 120 40"></svg>
+            </div>
+        </div>
+
+        <!-- MAIN AREA -->
+        <div class="main-area">
+            <!-- MAP PANEL -->
+            <div class="map-panel">
+                <div id="electionMap"></div>
+                <div class="map-legend">
+                    <div class="map-legend-title">Odstupanje od očekivane</div>
+                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#065f46"></div> &gt; +15%</div>
+                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#10b981"></div> +5% do +15%</div>
+                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#475569"></div> ±5% (očekivano)</div>
+                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#ef4444"></div> -5% do -15%</div>
+                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#7f1d1d"></div> &lt; -15%</div>
+                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#1e293b"></div> Nije prijavljeno</div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="right-panel">
+                <!-- TURNOUT TABLE -->
+                <div class="table-panel" style="position:relative;">
+                    <div class="num-buffer-indicator" id="numBufferIndicator">BM: </div>
+                    <div class="table-header">
+                        <span class="table-title">Izlaznost po biračkim mestima</span>
+                        <div class="table-controls">
+                            <span class="page-indicator" id="pageIndicator"></span>
+                            <button id="prevPageBtn" title="Prethodna strana">◀</button>
+                            <button id="nextPageBtn" title="Sledeća strana">▶</button>
+                            <button id="autoPageBtn" title="Auto rotacija stranica">Auto</button>
+                        </div>
+                    </div>
+                    <div class="table-scroll" id="tableScroll">
+                        <table class="turnout-table">
+                            <thead id="tableHead"></thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- BOTTOM: CHART + ALERTS -->
+                <div class="bottom-panel">
+                    <div class="chart-section">
+                        <div class="section-title">Trend izlaznosti</div>
+                        <div class="chart-canvas-wrap">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="alerts-section">
+                        <div class="section-title">Najveća odstupanja</div>
+                        <div class="alerts-list" id="alertsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trend overlay -->
+    <div class="trend-overlay" id="trendOverlay">
+        <div class="trend-overlay-header">
+            <span>Trend izlaznosti</span>
+            <span class="hint">ESC ili T za zatvaranje</span>
+        </div>
+        <canvas id="trendChartLarge"></canvas>
+    </div>
+
+    <!-- Keyboard help overlay -->
+    <div class="keyboard-help" id="keyboardHelp">
+        <div class="keyboard-help-inner">
+            <h2>Tastaturne prečice</h2>
+            <div class="shortcut-grid">
+                <span class="shortcut-key">0-9</span><span class="shortcut-desc">Brzi skok na BM po broju</span>
+                <span class="shortcut-key">Enter</span><span class="shortcut-desc">Potvrdi unos broja BM</span>
+                <span class="shortcut-key">P</span><span class="shortcut-desc">Pinuj / otpinuj BM</span>
+                <span class="shortcut-key">←  →</span><span class="shortcut-desc">Prethodna / sledeća stranica</span>
+                <span class="shortcut-key">A</span><span class="shortcut-desc">Auto-rotacija stranica</span>
+                <span class="shortcut-key">R</span><span class="shortcut-desc">Reset zoom mape</span>
+                <span class="shortcut-key">C</span><span class="shortcut-desc">Zoom na centar grada</span>
+                <span class="shortcut-key">T</span><span class="shortcut-desc">Uvećaj trend grafikon</span>
+                <span class="shortcut-key">F</span><span class="shortcut-desc">Fullscreen (browser)</span>
+                <span class="shortcut-key">?</span><span class="shortcut-desc">Prikaži ovu pomoć</span>
+                <span class="shortcut-key">Esc</span><span class="shortcut-desc">Zatvori / poništi</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+    // ============================================
+    // ELECTION DAY DASHBOARD - BOR 2026
+    // ============================================
+
+    function debounce(fn, delay) {
+        let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), delay); };
+    }
+
+    const TIME_SLOTS = ['09:00', '11:00', '13:00', '15:00', '17:00', '19:00'];
+    const EXPECTED_CURVE = [0.15, 0.25, 0.38, 0.50, 0.60, 0.68];
+    const CIRCUMFERENCE = 2 * Math.PI * 20;
+
+    const municipalitySlug = 'bor';
+    let munData = null;
+    let geojsonData = null;
+    let locationsData = null;
+    let turnoutData = {};
+    let electionMap = null;
+    let geojsonLayer = null;
+    let bmLayers = {};
+    let highlightedBm = null;
+
+    let currentPage = 0;
+    let pageSize = 15;
+    let autoPageInterval = null;
+
+    let pinnedBmIds = new Set();
+
+    let numBuffer = '';
+    let numBufferTimeout = null;
+
+    // ============================================
+    // INIT
+    // ============================================
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const resp = await fetch('data/bor.json');
+            if (!resp.ok) throw new Error('Podaci nisu pronađeni');
+            munData = await resp.json();
+
+            await Promise.all([loadGeoJSON(), loadLocations()]);
+
+            generateRandomTurnout();
+
+            document.getElementById('munName').textContent = munData.name;
+
+            renderTable();
+            updateStats();
+            renderAlerts();
+            startClock();
+            setupPagination();
+
+            document.getElementById('dashboard').style.display = 'grid';
+
+            requestAnimationFrame(() => {
+                calculatePageSize();
+                renderTablePage();
+                initMap();
+                renderTrendChart();
+                setupKeyboard();
+                window.addEventListener('resize', debounce(() => {
+                    calculatePageSize();
+                    renderTablePage();
+                    renderTrendChart();
+                }, 250));
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.classList.add('fade-out');
+                setTimeout(() => overlay.remove(), 300);
+            });
+
+        } catch (err) {
+            console.error('Init error:', err);
+            document.querySelector('.loading-text').textContent = 'Greška: ' + err.message;
+        }
+    });
+
+    // ============================================
+    // DATA LOADING
+    // ============================================
+
+    async function loadGeoJSON() {
+        try {
+            const resp = await fetch('data/bor.geojson');
+            if (resp.ok) geojsonData = await resp.json();
+        } catch (e) {
+            console.warn('GeoJSON not available:', e);
+        }
+    }
+
+    async function loadLocations() {
+        try {
+            const resp = await fetch('data/locations.json');
+            if (resp.ok) locationsData = await resp.json();
+        } catch (e) {
+            console.warn('Locations not available:', e);
+        }
+    }
+
+    // ============================================
+    // RANDOM TURNOUT GENERATION
+    // ============================================
+
+    function generateRandomTurnout() {
+        const now = new Date();
+        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+        let reportedSlots = 0;
+        const slotMinutes = [540, 660, 780, 900, 1020, 1140];
+        for (const sm of slotMinutes) {
+            if (currentMinutes >= sm) reportedSlots++;
+        }
+        reportedSlots = Math.max(reportedSlots, 4);
+
+        munData.polling_stations.forEach(ps => {
+            const bmId = ps.br_bm;
+            const registered = ps.biraci || 500;
+            const maxEst = ps.max_procena || registered * 0.6;
+            const expectedFinalRate = Math.min(maxEst / registered, 0.85);
+
+            const biasFactor = 0.7 + Math.random() * 0.6;
+
+            const slots = [];
+            for (let i = 0; i < TIME_SLOTS.length; i++) {
+                if (i < reportedSlots) {
+                    const baseRate = EXPECTED_CURVE[i] * expectedFinalRate;
+                    const noise = (Math.random() - 0.5) * 0.06;
+                    const actualRate = Math.max(0.02, Math.min(0.95, baseRate * biasFactor + noise));
+                    slots.push(Math.round(actualRate * registered));
+                } else {
+                    slots.push(null);
+                }
+            }
+
+            turnoutData[bmId] = {
+                slots,
+                registered,
+                expectedRates: EXPECTED_CURVE.map(c => c * expectedFinalRate),
+                expectedFinalRate
+            };
+        });
+    }
+
+    function getLatestTurnout(bmId) {
+        const td = turnoutData[bmId];
+        if (!td) return { voted: 0, pct: 0, slotIndex: -1 };
+        for (let i = td.slots.length - 1; i >= 0; i--) {
+            if (td.slots[i] !== null) {
+                return {
+                    voted: td.slots[i],
+                    pct: td.slots[i] / td.registered,
+                    slotIndex: i
+                };
+            }
+        }
+        return { voted: 0, pct: 0, slotIndex: -1 };
+    }
+
+    function getDeviation(bmId) {
+        const latest = getLatestTurnout(bmId);
+        if (latest.slotIndex < 0) return 0;
+        const expected = turnoutData[bmId].expectedRates[latest.slotIndex];
+        return latest.pct - expected;
+    }
+
+    function deviationColor(delta) {
+        if (delta > 0.15) return '#065f46';
+        if (delta > 0.05) return '#10b981';
+        if (delta > -0.05) return '#475569';
+        if (delta > -0.15) return '#ef4444';
+        return '#7f1d1d';
+    }
+
+    function deviationClass(delta) {
+        if (delta > 0.15) return 'cell-above-high';
+        if (delta > 0.05) return 'cell-above';
+        if (delta > -0.05) return 'cell-near';
+        if (delta > -0.15) return 'cell-below';
+        return 'cell-below-high';
+    }
+
+    // ============================================
+    // MAP
+    // ============================================
+
+    function initMap() {
+        electionMap = L.map('electionMap', {
+            zoomControl: false,
+            attributionControl: false
+        }).setView([44.0, 20.9], 10);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19
+        }).addTo(electionMap);
+
+        L.control.zoom({ position: 'topright' }).addTo(electionMap);
+
+        if (geojsonData) {
+            renderGeoJSON();
+        } else if (locationsData) {
+            renderLocationMarkers();
+        }
+    }
+
+    function renderGeoJSON() {
+        geojsonLayer = L.geoJSON(geojsonData, {
+            style: feature => {
+                const bmId = getBmIdFromFeature(feature);
+                const delta = getDeviation(bmId);
+                const hasData = getLatestTurnout(bmId).slotIndex >= 0;
+                return {
+                    fillColor: hasData ? deviationColor(delta) : '#1e293b',
+                    fillOpacity: hasData ? 0.7 : 0.3,
+                    color: '#94a3b8',
+                    weight: 2,
+                    opacity: 0.9
+                };
+            },
+            onEachFeature: (feature, layer) => {
+                const bmId = getBmIdFromFeature(feature);
+                bmLayers[bmId] = layer;
+
+                const ps = munData.polling_stations.find(p => p.br_bm === bmId);
+                if (!ps) return;
+
+                layer.on('mouseover', () => {
+                    layer.setStyle({ weight: 3, color: '#3b82f6', opacity: 1 });
+                    layer.bringToFront();
+                    updateTooltip(layer, bmId, ps);
+                });
+
+                layer.on('mouseout', () => {
+                    if (highlightedBm !== bmId) {
+                        layer.setStyle({ weight: 2, color: '#94a3b8', opacity: 0.9 });
+                    }
+                });
+
+                layer.on('click', () => {
+                    highlightBm(bmId);
+                    scrollTableToBm(bmId);
+                });
+            }
+        }).addTo(electionMap);
+
+        electionMap.fitBounds(geojsonLayer.getBounds(), { padding: [20, 20] });
+    }
+
+    function renderLocationMarkers() {
+        if (!locationsData) return;
+        const points = Array.isArray(locationsData) ? locationsData :
+            (locationsData.features ? locationsData.features.map(f => ({
+                br_bm: f.properties.br_bm,
+                lat: f.geometry.coordinates[1],
+                lon: f.geometry.coordinates[0]
+            })) : []);
+
+        const bounds = [];
+        points.forEach(loc => {
+            const bmId = loc.br_bm;
+            const delta = getDeviation(bmId);
+            const hasData = getLatestTurnout(bmId).slotIndex >= 0;
+            const color = hasData ? deviationColor(delta) : '#1e293b';
+
+            const marker = L.circleMarker([loc.lat, loc.lon], {
+                radius: 7,
+                fillColor: color,
+                fillOpacity: 0.8,
+                color: '#2d3a4f',
+                weight: 1.5
+            }).addTo(electionMap);
+
+            bmLayers[bmId] = marker;
+            bounds.push([loc.lat, loc.lon]);
+
+            const ps = munData.polling_stations.find(p => p.br_bm === bmId);
+            if (ps) {
+                marker.on('mouseover', () => updateTooltip(marker, bmId, ps));
+                marker.on('click', () => {
+                    highlightBm(bmId);
+                    scrollTableToBm(bmId);
+                });
+            }
+        });
+
+        if (bounds.length > 0) {
+            electionMap.fitBounds(bounds, { padding: [30, 30] });
+        }
+    }
+
+    function updateTooltip(layer, bmId, ps) {
+        const latest = getLatestTurnout(bmId);
+        const td = turnoutData[bmId];
+        const delta = getDeviation(bmId);
+        const deltaStr = (delta >= 0 ? '+' : '') + (delta * 100).toFixed(1) + '%';
+        const deltaClass = delta >= 0 ? 'delta-pos' : 'delta-neg';
+        const expectedPct = latest.slotIndex >= 0 ? (td.expectedRates[latest.slotIndex] * 100).toFixed(1) : '—';
+
+        layer.bindTooltip(`
+            <b>BM ${bmId}: ${ps.naziv || ''}</b><br>
+            Glasalo: <b>${latest.voted}</b> / ${td.registered} (${(latest.pct * 100).toFixed(1)}%)<br>
+            Očekivano: ${expectedPct}%&nbsp;&nbsp;
+            <span class="${deltaClass}"><b>${deltaStr}</b></span>
+        `, { className: 'bm-tooltip', sticky: true }).openTooltip();
+    }
+
+    function getBmIdFromFeature(feature) {
+        const props = feature.properties;
+        return props.br_bm || props.BM || props.id || props.BR_BM || 0;
+    }
+
+    function highlightBm(bmId) {
+        if (highlightedBm && bmLayers[highlightedBm]) {
+            const prevLayer = bmLayers[highlightedBm];
+            if (prevLayer.setStyle) prevLayer.setStyle({ weight: 2, color: '#94a3b8', opacity: 0.9 });
+        }
+        document.querySelectorAll('.turnout-table tbody tr.highlighted').forEach(r => r.classList.remove('highlighted'));
+
+        highlightedBm = bmId;
+        if (bmLayers[bmId]) {
+            const layer = bmLayers[bmId];
+            if (layer.setStyle) layer.setStyle({ weight: 3, color: '#3b82f6', opacity: 1 });
+            if (layer.bringToFront) layer.bringToFront();
+        }
+        const row = document.querySelector(`tr[data-bm="${bmId}"]`);
+        if (row) row.classList.add('highlighted');
+    }
+
+    function updateMapColors() {
+        Object.keys(bmLayers).forEach(bmId => {
+            const id = parseInt(bmId);
+            const delta = getDeviation(id);
+            const hasData = getLatestTurnout(id).slotIndex >= 0;
+            const layer = bmLayers[bmId];
+            if (layer.setStyle) {
+                layer.setStyle({
+                    fillColor: hasData ? deviationColor(delta) : '#1e293b',
+                    fillOpacity: hasData ? 0.7 : 0.3
+                });
+            }
+        });
+    }
+
+    // ============================================
+    // TURNOUT TABLE
+    // ============================================
+
+    function getUnpinnedStations() {
+        return munData.polling_stations.filter(ps => !pinnedBmIds.has(ps.br_bm));
+    }
+
+    function getTotalPages() {
+        const effectiveSize = Math.max(1, pageSize - pinnedBmIds.size - (pinnedBmIds.size > 0 ? 1 : 0));
+        return Math.ceil(getUnpinnedStations().length / effectiveSize);
+    }
+
+    function getEffectivePageSize() {
+        return Math.max(1, pageSize - pinnedBmIds.size - (pinnedBmIds.size > 0 ? 1 : 0));
+    }
+
+    function calculatePageSize() {
+        const tableScroll = document.getElementById('tableScroll');
+        if (!tableScroll) return;
+        const available = tableScroll.clientHeight;
+        const rowH = 28;
+        const headH = 30;
+        pageSize = Math.max(5, Math.floor((available - headH) / rowH));
+        if (currentPage >= getTotalPages()) currentPage = Math.max(0, getTotalPages() - 1);
+    }
+
+    function renderTable() {
+        const thead = document.getElementById('tableHead');
+        thead.innerHTML = `<tr>
+            <th>#</th><th>Biračko mesto</th><th>Birači</th>
+            ${TIME_SLOTS.map(s => `<th>${s}</th>`).join('')}
+        </tr>`;
+        renderTablePage();
+    }
+
+    function buildRowHtml(ps, isPinned) {
+        const td = turnoutData[ps.br_bm];
+        if (!td) return '';
+        const cells = td.slots.map((v, i) => {
+            if (v === null) return `<td class="cell-empty">—</td>`;
+            const pct = v / td.registered;
+            const delta = pct - td.expectedRates[i];
+            return `<td class="${deviationClass(delta)}">${(pct * 100).toFixed(1)}%</td>`;
+        }).join('');
+        const hl = highlightedBm === ps.br_bm ? ' highlighted' : '';
+        return `<tr data-bm="${ps.br_bm}" class="${isPinned ? 'pinned' : ''}${hl}" onmouseenter="onTableRowHover(${ps.br_bm})" onmouseleave="onTableRowLeave(${ps.br_bm})" onclick="onTableRowClick(${ps.br_bm})">
+            <td onclick="event.stopPropagation();togglePin(${ps.br_bm})">${ps.br_bm}</td>
+            <td title="${ps.naziv || ''}">${truncate(ps.naziv || '—', 22)}</td>
+            <td>${td.registered.toLocaleString()}</td>
+            ${cells}
+        </tr>`;
+    }
+
+    function renderTablePage() {
+        const tbody = document.getElementById('tableBody');
+        let html = '';
+
+        if (pinnedBmIds.size > 0) {
+            const pinned = munData.polling_stations.filter(ps => pinnedBmIds.has(ps.br_bm));
+            html += pinned.map(ps => buildRowHtml(ps, true)).join('');
+            html += `<tr class="pin-separator"><td colspan="${3 + TIME_SLOTS.length}"></td></tr>`;
+        }
+
+        const unpinned = getUnpinnedStations();
+        const eff = getEffectivePageSize();
+        const start = currentPage * eff;
+        const pageStations = unpinned.slice(start, start + eff);
+        html += pageStations.map(ps => buildRowHtml(ps, false)).join('');
+
+        tbody.innerHTML = html;
+        updatePageIndicator();
+    }
+
+    function truncate(str, len) {
+        return str.length > len ? str.substring(0, len) + '…' : str;
+    }
+
+    function updatePageIndicator() {
+        const total = getTotalPages();
+        document.getElementById('pageIndicator').textContent = `${currentPage + 1}/${total}`;
+    }
+
+    function togglePin(bmId) {
+        if (pinnedBmIds.has(bmId)) pinnedBmIds.delete(bmId);
+        else pinnedBmIds.add(bmId);
+        calculatePageSize();
+        if (currentPage >= getTotalPages()) currentPage = Math.max(0, getTotalPages() - 1);
+        renderTablePage();
+    }
+
+    function scrollTableToBm(bmId) {
+        if (pinnedBmIds.has(bmId)) {
+            renderTablePage();
+            requestAnimationFrame(() => {
+                const row = document.querySelector(`tr[data-bm="${bmId}"]`);
+                if (row) row.classList.add('highlighted');
+            });
+            return;
+        }
+        const unpinned = getUnpinnedStations();
+        const idx = unpinned.findIndex(ps => ps.br_bm === bmId);
+        if (idx < 0) return;
+        const eff = getEffectivePageSize();
+        const targetPage = Math.floor(idx / eff);
+        if (targetPage !== currentPage) {
+            currentPage = targetPage;
+            renderTablePage();
+        }
+        requestAnimationFrame(() => {
+            const row = document.querySelector(`tr[data-bm="${bmId}"]`);
+            if (row) {
+                row.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                row.classList.add('highlighted');
+            }
+        });
+    }
+
+    function onTableRowHover(bmId) {
+        if (bmLayers[bmId]) {
+            const layer = bmLayers[bmId];
+            if (layer.setStyle) layer.setStyle({ weight: 3, color: '#3b82f6', opacity: 1 });
+            if (layer.bringToFront) layer.bringToFront();
+        }
+    }
+
+    function onTableRowLeave(bmId) {
+        if (highlightedBm !== bmId && bmLayers[bmId]) {
+            const layer = bmLayers[bmId];
+            if (layer.setStyle) layer.setStyle({ weight: 2, color: '#94a3b8', opacity: 0.9 });
+        }
+    }
+
+    function onTableRowClick(bmId) {
+        highlightBm(bmId);
+        if (bmLayers[bmId]) {
+            const layer = bmLayers[bmId];
+            if (layer.getBounds) {
+                electionMap.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 16 });
+            } else if (layer.getLatLng) {
+                electionMap.setView(layer.getLatLng(), 15);
+            }
+        }
+    }
+
+    // ============================================
+    // PAGINATION
+    // ============================================
+
+    function setupPagination() {
+        document.getElementById('prevPageBtn').onclick = () => {
+            if (currentPage > 0) { currentPage--; renderTablePage(); }
+        };
+        document.getElementById('nextPageBtn').onclick = () => {
+            if (currentPage < getTotalPages() - 1) { currentPage++; renderTablePage(); }
+        };
+        document.getElementById('autoPageBtn').onclick = toggleAutoPage;
+    }
+
+    function toggleAutoPage() {
+        const btn = document.getElementById('autoPageBtn');
+        if (autoPageInterval) {
+            clearInterval(autoPageInterval);
+            autoPageInterval = null;
+            btn.classList.remove('active');
+        } else {
+            autoPageInterval = setInterval(() => {
+                currentPage = (currentPage + 1) % getTotalPages();
+                renderTablePage();
+            }, 10000);
+            btn.classList.add('active');
+        }
+    }
+
+    // ============================================
+    // STATS BAR
+    // ============================================
+
+    function updateStats() {
+        let totalVoted = 0;
+        let totalRegistered = 0;
+        let bmReporting = 0;
+
+        munData.polling_stations.forEach(ps => {
+            const td = turnoutData[ps.br_bm];
+            if (!td) return;
+            totalRegistered += td.registered;
+            const latest = getLatestTurnout(ps.br_bm);
+            totalVoted += latest.voted;
+            if (latest.slotIndex >= 0) bmReporting++;
+        });
+
+        const pct = totalRegistered > 0 ? totalVoted / totalRegistered : 0;
+        document.getElementById('turnoutPct').textContent = (pct * 100).toFixed(1) + '%';
+        document.getElementById('votedCount').textContent =
+            totalVoted.toLocaleString() + ' / ' + totalRegistered.toLocaleString();
+        document.getElementById('bmReporting').textContent =
+            bmReporting + ' / ' + munData.polling_stations.length;
+
+        const offset = CIRCUMFERENCE * (1 - pct);
+        document.getElementById('turnoutArc').setAttribute('stroke-dashoffset', offset);
+        document.getElementById('turnoutRingText').textContent = Math.round(pct * 100) + '%';
+
+        const latestSlotIdx = getGlobalLatestSlot();
+        if (latestSlotIdx >= 0 && EXPECTED_CURVE[latestSlotIdx] > 0) {
+            const currentRate = pct;
+            const curveRatio = EXPECTED_CURVE[EXPECTED_CURVE.length - 1] / EXPECTED_CURVE[latestSlotIdx];
+            const projected = Math.min(currentRate * curveRatio, 0.95);
+            document.getElementById('projectedPct').textContent = (projected * 100).toFixed(1) + '%';
+        }
+
+        renderSparkline(pct);
+    }
+
+    function getGlobalLatestSlot() {
+        let maxSlot = -1;
+        munData.polling_stations.forEach(ps => {
+            const lt = getLatestTurnout(ps.br_bm);
+            if (lt.slotIndex > maxSlot) maxSlot = lt.slotIndex;
+        });
+        return maxSlot;
+    }
+
+    function startClock() {
+        function tick() {
+            const now = new Date();
+            document.getElementById('clockValue').textContent =
+                now.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        tick();
+        setInterval(tick, 1000);
+    }
+
+    // ============================================
+    // SPARKLINE
+    // ============================================
+
+    function renderSparkline() {
+        const svg = document.getElementById('sparkline');
+        const latestSlot = getGlobalLatestSlot();
+        if (latestSlot < 0) { svg.innerHTML = ''; return; }
+
+        let totalRegistered = 0;
+        munData.polling_stations.forEach(ps => { totalRegistered += (turnoutData[ps.br_bm]?.registered || 0); });
+
+        const actualPoints = [];
+        const expectedPoints = [];
+
+        for (let i = 0; i <= latestSlot; i++) {
+            let slotVoted = 0;
+            munData.polling_stations.forEach(ps => {
+                const td = turnoutData[ps.br_bm];
+                if (td && td.slots[i] !== null) slotVoted += td.slots[i];
+            });
+            const x = 10 + (i / (TIME_SLOTS.length - 1)) * 100;
+            const yActual = 36 - (slotVoted / totalRegistered) * 40;
+            const yExpected = 36 - EXPECTED_CURVE[i] * 0.68 * 40;
+            actualPoints.push(`${x},${yActual}`);
+            expectedPoints.push(`${x},${yExpected}`);
+        }
+
+        svg.innerHTML = `
+            <polyline points="${expectedPoints.join(' ')}" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,2"/>
+            <polyline points="${actualPoints.join(' ')}" fill="none" stroke="#3b82f6" stroke-width="2"/>
+            ${actualPoints.map(p => `<circle cx="${p.split(',')[0]}" cy="${p.split(',')[1]}" r="2.5" fill="#3b82f6"/>`).join('')}
+        `;
+    }
+
+    // ============================================
+    // TREND CHART (Canvas)
+    // ============================================
+
+    function renderTrendChart() {
+        const canvas = document.getElementById('trendChart');
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        const pad = { top: 10, right: 10, bottom: 24, left: 36 };
+        const chartW = W - pad.left - pad.right;
+        const chartH = H - pad.top - pad.bottom;
+
+        ctx.clearRect(0, 0, W, H);
+
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 4; i++) {
+            const y = pad.top + (i / 4) * chartH;
+            ctx.beginPath();
+            ctx.moveTo(pad.left, y);
+            ctx.lineTo(W - pad.right, y);
+            ctx.stroke();
+        }
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 4; i++) {
+            const y = pad.top + (i / 4) * chartH;
+            ctx.fillText((100 - i * 25) + '%', pad.left - 4, y + 3);
+        }
+
+        ctx.textAlign = 'center';
+        TIME_SLOTS.forEach((slot, i) => {
+            const x = pad.left + (i / (TIME_SLOTS.length - 1)) * chartW;
+            ctx.fillText(slot, x, H - 4);
+        });
+
+        let totalRegistered = 0;
+        munData.polling_stations.forEach(ps => { totalRegistered += (turnoutData[ps.br_bm]?.registered || 0); });
+
+        const latestSlot = getGlobalLatestSlot();
+
+        ctx.setLineDash([4, 3]);
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        EXPECTED_CURVE.forEach((rate, i) => {
+            const x = pad.left + (i / (TIME_SLOTS.length - 1)) * chartW;
+            const y = pad.top + (1 - rate * 0.68 / 1.0) * chartH;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        if (latestSlot >= 0) {
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            const points = [];
+            for (let i = 0; i <= latestSlot; i++) {
+                let slotVoted = 0;
+                munData.polling_stations.forEach(ps => {
+                    const td = turnoutData[ps.br_bm];
+                    if (td && td.slots[i] !== null) slotVoted += td.slots[i];
+                });
+                const x = pad.left + (i / (TIME_SLOTS.length - 1)) * chartW;
+                const pct = slotVoted / totalRegistered;
+                const y = pad.top + (1 - pct / 1.0) * chartH;
+                points.push({ x, y });
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            points.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fill();
+                ctx.strokeStyle = '#0a0e17';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            });
+        }
+
+        ctx.font = '9px Space Grotesk';
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillRect(W - 110, 4, 8, 8);
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'left';
+        ctx.fillText('Stvarna', W - 98, 12);
+
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(W - 60, 4, 8, 8);
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('Očekivana', W - 48, 12);
+    }
+
+    // ============================================
+    // ALERTS
+    // ============================================
+
+    function renderAlerts() {
+        const deviations = munData.polling_stations.map(ps => ({
+            bmId: ps.br_bm,
+            name: ps.naziv || 'BM ' + ps.br_bm,
+            delta: getDeviation(ps.br_bm),
+            hasData: getLatestTurnout(ps.br_bm).slotIndex >= 0
+        })).filter(d => d.hasData);
+
+        deviations.sort((a, b) => a.delta - b.delta);
+
+        const container = document.getElementById('alertsList');
+        const itemH = 24;
+        const availableH = container.parentElement.clientHeight - 28;
+        const maxItems = Math.max(4, Math.floor(availableH / itemH));
+        const half = Math.floor(maxItems / 2);
+
+        const worst = deviations.slice(0, half);
+        const best = deviations.slice(-half).reverse();
+
+        container.innerHTML = [
+            ...worst.map(d => alertHTML(d, 'negative')),
+            ...best.map(d => alertHTML(d, 'positive'))
+        ].join('');
+    }
+
+    function alertHTML(d, type) {
+        const sign = d.delta >= 0 ? '+' : '';
+        return `<div class="alert-item ${type}">
+            <span class="alert-bm">${d.bmId}</span>
+            <span class="alert-name" title="${d.name}">${truncate(d.name, 20)}</span>
+            <span class="alert-delta ${type}">${sign}${(d.delta * 100).toFixed(1)}%</span>
+        </div>`;
+    }
+
+    // ============================================
+    // KEYBOARD CONTROLS
+    // ============================================
+
+    function setupKeyboard() {
+        document.addEventListener('keydown', handleKeyDown);
+    }
+
+    function handleKeyDown(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+        const key = e.key;
+
+        if (key === 'Escape') {
+            if (document.getElementById('trendOverlay').classList.contains('active')) {
+                toggleTrendOverlay(); return;
+            }
+            if (document.getElementById('keyboardHelp').classList.contains('active')) {
+                toggleKeyboardHelp(); return;
+            }
+            if (numBuffer) { clearNumBuffer(); return; }
+            if (highlightedBm) { deselectBm(); return; }
+            return;
+        }
+
+        if (key === '?' || (e.shiftKey && key === '/')) {
+            e.preventDefault();
+            toggleKeyboardHelp();
+            return;
+        }
+
+        if (document.getElementById('keyboardHelp').classList.contains('active')) return;
+
+        if (key === 't' || key === 'T') {
+            if (numBuffer) return;
+            e.preventDefault();
+            toggleTrendOverlay();
+            return;
+        }
+
+        if (document.getElementById('trendOverlay').classList.contains('active')) return;
+
+        if (/^[0-9]$/.test(key)) {
+            onDigitPress(key);
+            return;
+        }
+
+        if (key === 'Enter' && numBuffer) {
+            e.preventDefault();
+            executeNumBuffer();
+            return;
+        }
+
+        if (key === 'ArrowLeft') {
+            e.preventDefault();
+            if (currentPage > 0) { currentPage--; renderTablePage(); }
+            return;
+        }
+        if (key === 'ArrowRight') {
+            e.preventDefault();
+            if (currentPage < getTotalPages() - 1) { currentPage++; renderTablePage(); }
+            return;
+        }
+
+        if ((key === 'p' || key === 'P') && highlightedBm) {
+            e.preventDefault();
+            togglePin(highlightedBm);
+            return;
+        }
+
+        if (key === 'a' || key === 'A') {
+            e.preventDefault();
+            toggleAutoPage();
+            return;
+        }
+
+        if (key === 'r' || key === 'R') {
+            e.preventDefault();
+            resetMapZoom();
+            return;
+        }
+
+        if (key === 'c' || key === 'C') {
+            e.preventDefault();
+            zoomToCityCenter();
+            return;
+        }
+
+        if (key === 'f' || key === 'F') {
+            e.preventDefault();
+            toggleFullscreen();
+            return;
+        }
+    }
+
+    // ============================================
+    // NUM BUFFER (quick BM jump)
+    // ============================================
+
+    function onDigitPress(digit) {
+        numBuffer += digit;
+        showNumBufferIndicator();
+        clearTimeout(numBufferTimeout);
+        numBufferTimeout = setTimeout(executeNumBuffer, 800);
+    }
+
+    function executeNumBuffer() {
+        clearTimeout(numBufferTimeout);
+        const bmId = parseInt(numBuffer);
+        numBuffer = '';
+        hideNumBufferIndicator();
+        if (!bmId || !turnoutData[bmId]) return;
+        highlightBm(bmId);
+        scrollTableToBm(bmId);
+        if (bmLayers[bmId]) {
+            const layer = bmLayers[bmId];
+            if (layer.getBounds) electionMap.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 16 });
+            else if (layer.getLatLng) electionMap.setView(layer.getLatLng(), 15);
+        }
+    }
+
+    function clearNumBuffer() {
+        numBuffer = '';
+        clearTimeout(numBufferTimeout);
+        hideNumBufferIndicator();
+    }
+
+    function showNumBufferIndicator() {
+        const el = document.getElementById('numBufferIndicator');
+        el.textContent = 'BM: ' + numBuffer + '_';
+        el.classList.add('visible');
+    }
+
+    function hideNumBufferIndicator() {
+        document.getElementById('numBufferIndicator').classList.remove('visible');
+    }
+
+    // ============================================
+    // MAP SHORTCUTS
+    // ============================================
+
+    function deselectBm() {
+        if (highlightedBm) {
+            highlightBm(null);
+            document.querySelectorAll('.turnout-table tbody tr.highlighted').forEach(r => r.classList.remove('highlighted'));
+        }
+    }
+
+    function resetMapZoom() {
+        deselectBm();
+        if (geojsonLayer) {
+            electionMap.fitBounds(geojsonLayer.getBounds(), { padding: [20, 20] });
+        } else {
+            const allBounds = Object.values(bmLayers).filter(l => l.getLatLng).map(l => l.getLatLng());
+            if (allBounds.length) electionMap.fitBounds(L.latLngBounds(allBounds), { padding: [30, 30] });
+        }
+    }
+
+    function zoomToCityCenter() {
+        deselectBm();
+        const lats = [], lngs = [];
+        Object.values(bmLayers).forEach(layer => {
+            let ll;
+            if (layer.getBounds) {
+                ll = layer.getBounds().getCenter();
+            } else if (layer.getLatLng) {
+                ll = layer.getLatLng();
+            }
+            if (ll) { lats.push(ll.lat); lngs.push(ll.lng); }
+        });
+        if (!lats.length) return;
+        const centerLat = lats.reduce((a, b) => a + b) / lats.length;
+        const centerLng = lngs.reduce((a, b) => a + b) / lngs.length;
+        electionMap.setView([centerLat, centerLng], 14, { animate: true });
+    }
+
+    function toggleFullscreen() {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen().catch(() => {});
+    }
+
+    // ============================================
+    // TREND OVERLAY
+    // ============================================
+
+    function toggleTrendOverlay() {
+        const overlay = document.getElementById('trendOverlay');
+        overlay.classList.toggle('active');
+        if (overlay.classList.contains('active')) {
+            requestAnimationFrame(renderTrendChartLarge);
+        }
+    }
+
+    function renderTrendChartLarge() {
+        const canvas = document.getElementById('trendChartLarge');
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight - 50;
+
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        const pad = { top: 20, right: 30, bottom: 40, left: 60 };
+        const chartW = W - pad.left - pad.right;
+        const chartH = H - pad.top - pad.bottom;
+
+        ctx.clearRect(0, 0, W, H);
+
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 8; i++) {
+            const y = pad.top + (i / 8) * chartH;
+            ctx.beginPath();
+            ctx.moveTo(pad.left, y);
+            ctx.lineTo(W - pad.right, y);
+            ctx.stroke();
+        }
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '13px JetBrains Mono';
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 8; i++) {
+            const y = pad.top + (i / 8) * chartH;
+            ctx.fillText((100 - i * 12.5).toFixed(0) + '%', pad.left - 8, y + 4);
+        }
+
+        ctx.textAlign = 'center';
+        ctx.font = '13px Space Grotesk';
+        TIME_SLOTS.forEach((slot, i) => {
+            const x = pad.left + (i / (TIME_SLOTS.length - 1)) * chartW;
+            ctx.fillText(slot, x, H - 10);
+        });
+
+        let totalRegistered = 0;
+        munData.polling_stations.forEach(ps => { totalRegistered += (turnoutData[ps.br_bm]?.registered || 0); });
+        const latestSlot = getGlobalLatestSlot();
+
+        ctx.setLineDash([6, 4]);
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        EXPECTED_CURVE.forEach((rate, i) => {
+            const x = pad.left + (i / (TIME_SLOTS.length - 1)) * chartW;
+            const y = pad.top + (1 - rate * 0.68) * chartH;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        if (latestSlot >= 0) {
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            const points = [];
+            for (let i = 0; i <= latestSlot; i++) {
+                let slotVoted = 0;
+                munData.polling_stations.forEach(ps => {
+                    const td = turnoutData[ps.br_bm];
+                    if (td && td.slots[i] !== null) slotVoted += td.slots[i];
+                });
+                const x = pad.left + (i / (TIME_SLOTS.length - 1)) * chartW;
+                const pct = slotVoted / totalRegistered;
+                const y = pad.top + (1 - pct) * chartH;
+                points.push({ x, y, pct });
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            points.forEach((p, i) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fill();
+                ctx.strokeStyle = '#0a0e17';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#f0f4f8';
+                ctx.font = 'bold 12px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.fillText((p.pct * 100).toFixed(1) + '%', p.x, p.y - 14);
+            });
+        }
+
+        ctx.font = '12px Space Grotesk';
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillRect(W - 180, 8, 12, 12);
+        ctx.fillStyle = '#94a3b8';
+        ctx.textAlign = 'left';
+        ctx.fillText('Stvarna', W - 164, 19);
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(W - 100, 8, 12, 12);
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('Očekivana', W - 84, 19);
+    }
+
+    // ============================================
+    // KEYBOARD HELP
+    // ============================================
+
+    function toggleKeyboardHelp() {
+        document.getElementById('keyboardHelp').classList.toggle('active');
+    }
+
+    </script>
+</body>
+</html>

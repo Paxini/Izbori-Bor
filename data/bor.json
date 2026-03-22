@@ -1,0 +1,478 @@
+{
+  "name": "БОР",
+  "slug": "bor",
+  "bm_count": 47,
+  "total_voters": 39892,
+  "polling_stations": [
+    {
+      "br_bm": 1,
+      "naziv": "МЗ \"БРЕЗОНИК\"",
+      "adresa": "БОР, КОЗАРАЧКА БР. 3А",
+      "cat_2022": 3,
+      "max_procena": 271.3,
+      "biraci": 808,
+      "prioritet": 5,
+      "prioritet_lokalni": 5
+    },
+    {
+      "br_bm": 2,
+      "naziv": "ЦЕНТАР ЗА СОЦИЈАЛНИ РАД",
+      "adresa": "БОР, ВОЈСКЕ ЈУГОСЛАВИЈЕ БР. 11",
+      "cat_2022": 5,
+      "max_procena": 319.62,
+      "biraci": 1097,
+      "prioritet": 5,
+      "prioritet_lokalni": 5
+    },
+    {
+      "br_bm": 3,
+      "naziv": "ТЕХНИЧКИ ФАКУЛТЕТ - РУДАРСКИ ОДСЕК",
+      "adresa": "БОР, ВОЈСКЕ ЈУГОСЛАВИЈЕ БР. 15",
+      "cat_2022": 3,
+      "max_procena": 410.12,
+      "biraci": 1076,
+      "prioritet": 5,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 4,
+      "naziv": "МЗ \"СТАРИ ЦЕНТАР\"",
+      "adresa": "БОР, БОЖИНА ЈОВАНОВИЋА (БИВША КЕСТЕНОВА) БР. 3",
+      "cat_2022": 6,
+      "max_procena": 439.74,
+      "biraci": 1304,
+      "prioritet": 5,
+      "prioritet_lokalni": 5
+    },
+    {
+      "br_bm": 5,
+      "naziv": "МЗ \"СТАРИ ЦЕНТАР\"",
+      "adresa": "БОР, БОЖИНА ЈОВАНОВИЋА (БИВША КЕСТЕНОВА) БР. 3",
+      "cat_2022": 3,
+      "max_procena": 245,
+      "biraci": 661,
+      "prioritet": 5,
+      "prioritet_lokalni": 5
+    },
+    {
+      "br_bm": 6,
+      "naziv": "ОШ \"ВУК КАРАЏИЋ\"",
+      "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 6",
+      "cat_2022": 3,
+      "max_procena": 306.78,
+      "biraci": 808,
+      "prioritet": 6,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 7,
+      "naziv": "МЗ \"СТАРО СЕЛИШТЕ\"",
+      "adresa": "БОР, АЛБАНСКЕ СПОМЕНИЦЕ БР. 13",
+      "cat_2022": 3,
+      "max_procena": 385.14,
+      "biraci": 1007,
+      "prioritet": 6,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 8,
+      "naziv": "ПОСЛОВНЕ ПРОСТОРИЈЕ",
+      "adresa": "БОР, ФИЛИПА ФИЛИПОВИЋА БР. 6",
+      "cat_2022": 8,
+      "max_procena": 364.4,
+      "biraci": 1057,
+      "prioritet": 5,
+      "prioritet_lokalni": 5
+    },
+    {
+      "br_bm": 9,
+      "naziv": "МЗ \"НОВО СЕЛИШТЕ\"",
+      "adresa": "БОР, ЊЕГОШЕВА БР. 5А",
+      "cat_2022": 3,
+      "max_procena": 745.27,
+      "biraci": 1842,
+      "prioritet": 3,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 10,
+      "naziv": "МЗ \"НОВО СЕЛИШТЕ\"",
+      "adresa": "БОР, ЊЕГОШЕВА БР. 5А",
+      "cat_2022": 3,
+      "max_procena": 419.23,
+      "biraci": 1085,
+      "prioritet": 3,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 11,
+      "naziv": "ОШ \"БРАНКО РАДИЧЕВИЋ\"",
+      "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 31",
+      "cat_2022": 2,
+      "max_procena": 477.80000000000007,
+      "biraci": 1177,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 12,
+      "naziv": "ОШ \"БРАНКО РАДИЧЕВИЋ\"",
+      "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 31",
+      "cat_2022": 3,
+      "max_procena": 480.34000000000003,
+      "biraci": 1235,
+      "prioritet": 3,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 13,
+      "naziv": "МЗ \"РУДАР\"",
+      "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 74",
+      "cat_2022": 2,
+      "max_procena": 361.87,
+      "biraci": 865,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 14,
+      "naziv": "КЛУБ ПЕНЗИОНЕРА",
+      "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 96",
+      "cat_2022": 3,
+      "max_procena": 476.69,
+      "biraci": 1133,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 15,
+      "naziv": "ОШ \"ДУШАН РАДОВИЋ\"",
+      "adresa": "БОР, КРАЉА ПЕТРА ПРВОГ БР. 10",
+      "cat_2022": 2,
+      "max_procena": 340.38,
+      "biraci": 836,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 16,
+      "naziv": "МЗ \"БАКАР\"",
+      "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 76А",
+      "cat_2022": 3,
+      "max_procena": 481.59000000000003,
+      "biraci": 1212,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 17,
+      "naziv": "ОШ \"ВИДОВДАН\"",
+      "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 31",
+      "cat_2022": 2,
+      "max_procena": 414.86,
+      "biraci": 1034,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 18,
+      "naziv": "ОШ \"ТРЕЋИ ОКТОБАР\"",
+      "adresa": "БОР, ТРЕЋИ ОКТОБАР БР. 71",
+      "cat_2022": 1,
+      "max_procena": 476.25,
+      "biraci": 1043,
+      "prioritet": 1,
+      "prioritet_lokalni": 1
+    },
+    {
+      "br_bm": 19,
+      "naziv": "ОШ \"ТРЕЋИ ОКТОБАР\"",
+      "adresa": "БОР, ТРЕЋИ ОКТОБАР БР. 71",
+      "cat_2022": 1,
+      "max_procena": 536.51,
+      "biraci": 1223,
+      "prioritet": 1,
+      "prioritet_lokalni": 1
+    },
+    {
+      "br_bm": 20,
+      "naziv": "МЗ \"НАПРЕДАК\"",
+      "adresa": "БОР, ЗАЈЕЧАРСКА ББ",
+      "cat_2022": 2,
+      "max_procena": 563.22,
+      "biraci": 1274,
+      "prioritet": 2,
+      "prioritet_lokalni": 2
+    },
+    {
+      "br_bm": 21,
+      "naziv": "МАШИНСКО ЕЛЕКТРОТЕХНИЧКА ШКОЛА",
+      "adresa": "БОР, ЗЕЛЕНИ БУЛЕВАР БР. 24",
+      "cat_2022": 2,
+      "max_procena": 561.4100000000001,
+      "biraci": 1280,
+      "prioritet": 2,
+      "prioritet_lokalni": 2
+    },
+    {
+      "br_bm": 22,
+      "naziv": "ГИМНАЗИЈА \"БОРА СТАНКОВИЋ\"",
+      "adresa": "БОР, ЗЕЛЕНИ БУЛЕВАР БР. 26",
+      "cat_2022": 1,
+      "max_procena": 397.57,
+      "biraci": 866,
+      "prioritet": 1,
+      "prioritet_lokalni": 1
+    },
+    {
+      "br_bm": 23,
+      "naziv": "ШКОЛСКА РАДИОНИЦА МАШИНСКО ЕЛЕКТРОТЕХНИЧКЕ ШКОЛЕ",
+      "adresa": "БОР, ЗЕЛЕНИ БУЛЕВАР БР. 22",
+      "cat_2022": 2,
+      "max_procena": 263.31,
+      "biraci": 632,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 24,
+      "naziv": "МЗ \"СЛОГА\"",
+      "adresa": "БОР, ЂОРЂА СИМЕОНОВИЋА БР. 2",
+      "cat_2022": 7,
+      "max_procena": 292.61,
+      "biraci": 819,
+      "prioritet": 6,
+      "prioritet_lokalni": 4
+    },
+    {
+      "br_bm": 25,
+      "naziv": "МЗ \"БРЕСТОВАЧКА БАЊА\"",
+      "adresa": "БОР, ВОЈВОДЕ РАДОМИРА ПУТНИКА БР. 4",
+      "cat_2022": 7,
+      "max_procena": 326.89,
+      "biraci": 844,
+      "prioritet": 3,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 26,
+      "naziv": "МЗ \"НОВИ ЦЕНТАР\"",
+      "adresa": "БОР, ДОБРИВОЈА РАДОСАВЉЕВИЋА БОБИЈА БР. 15",
+      "cat_2022": 7,
+      "max_procena": 468.52,
+      "biraci": 1214,
+      "prioritet": 7,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 27,
+      "naziv": "ПОСЛОВНИ ПРОСТОР",
+      "adresa": "БОР, ДОБРИВОЈА РАДОСАВЉЕВИЋА БОБИЈА БР. 46",
+      "cat_2022": 2,
+      "max_procena": 626.37,
+      "biraci": 1493,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 28,
+      "naziv": "МЗ \"МЕТАЛУРГ\"",
+      "adresa": "БОР, ЉУБЕ НЕШИЋА БР. 23",
+      "cat_2022": 2,
+      "max_procena": 400.98,
+      "biraci": 919,
+      "prioritet": 2,
+      "prioritet_lokalni": 2
+    },
+    {
+      "br_bm": 29,
+      "naziv": "ОШ \"ПЕТАР РАДОВАНОВИЋ\"",
+      "adresa": "ЗЛОТ",
+      "cat_2022": 8,
+      "max_procena": 161.99,
+      "biraci": 587,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 30,
+      "naziv": "МЗ \"ЗЛОТ\"",
+      "adresa": "ЗЛОТ",
+      "cat_2022": 8,
+      "max_procena": 396.05,
+      "biraci": 1217,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 31,
+      "naziv": "ОШ НА \"КОБИЛИ\"",
+      "adresa": "ЗЛОТ",
+      "cat_2022": 8,
+      "max_procena": 69.77000000000001,
+      "biraci": 277,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 32,
+      "naziv": "ОШ НА \"СЕЛИШТУ\"",
+      "adresa": "ЗЛОТ",
+      "cat_2022": 8,
+      "max_procena": 80.85,
+      "biraci": 309,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 33,
+      "naziv": "ОШ \"СТАНОЈЕ МИЉКОВИЋ\"",
+      "adresa": "ШАРБАНОВАЦ",
+      "cat_2022": 8,
+      "max_procena": 252.40000000000003,
+      "biraci": 810,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 34,
+      "naziv": "ОШ НА \"ТИМОКУ\"",
+      "adresa": "ШАРБАНОВАЦ",
+      "cat_2022": 8,
+      "max_procena": 100.51000000000002,
+      "biraci": 339,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 35,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "МЕТОВНИЦА",
+      "cat_2022": 8,
+      "max_procena": 207.54000000000002,
+      "biraci": 728,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 36,
+      "naziv": "ОШ \"СТАНОЈЕ МИЉКОВИЋ\"",
+      "adresa": "БРЕСТОВАЦ",
+      "cat_2022": 8,
+      "max_procena": 275.72,
+      "biraci": 806,
+      "prioritet": 6,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 37,
+      "naziv": "ОШ \"СТАНОЈЕ МИЉКОВИЋ\"",
+      "adresa": "БРЕСТОВАЦ",
+      "cat_2022": 7,
+      "max_procena": 316.06000000000006,
+      "biraci": 901,
+      "prioritet": 6,
+      "prioritet_lokalni": 6
+    },
+    {
+      "br_bm": 38,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "СЛАТИНА",
+      "cat_2022": 3,
+      "max_procena": 276.06,
+      "biraci": 720,
+      "prioritet": 7,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 39,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "БУЧЈЕ",
+      "cat_2022": 8,
+      "max_procena": 110.45,
+      "biraci": 412,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 40,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "ДОЊА БЕЛА РЕКА",
+      "cat_2022": 8,
+      "max_procena": 136.25,
+      "biraci": 520,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 41,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "ЛУКА",
+      "cat_2022": 8,
+      "max_procena": 115.75,
+      "biraci": 430,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 42,
+      "naziv": "ОШ \"ЂУРА ЈАКШИЋ\"",
+      "adresa": "КРИВЕЉ",
+      "cat_2022": 2,
+      "max_procena": 176.95000000000002,
+      "biraci": 454,
+      "prioritet": 3,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 43,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "МАЛИ КРИВЕЉ",
+      "cat_2022": 3,
+      "max_procena": 118.9,
+      "biraci": 289,
+      "prioritet": 2,
+      "prioritet_lokalni": 3
+    },
+    {
+      "br_bm": 44,
+      "naziv": "ОШ \"БРАНКО РАДИЧЕВИЋ\"",
+      "adresa": "ОШТРЕЉ",
+      "cat_2022": 3,
+      "max_procena": 157.99,
+      "biraci": 443,
+      "prioritet": 4,
+      "prioritet_lokalni": 4
+    },
+    {
+      "br_bm": 45,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "ГОРЊАНЕ",
+      "cat_2022": 8,
+      "max_procena": 121.94999999999999,
+      "biraci": 417,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 46,
+      "naziv": "ОШ У \"КРУШАРУ\"",
+      "adresa": "ГОРЊАНЕ",
+      "cat_2022": 8,
+      "max_procena": 48.49,
+      "biraci": 176,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 47,
+      "naziv": "ДОМ КУЛТУРЕ",
+      "adresa": "ТАНДА",
+      "cat_2022": 8,
+      "max_procena": 68.83000000000001,
+      "biraci": 213,
+      "prioritet": 8,
+      "prioritet_lokalni": 8
+    }
+  ]
+}
