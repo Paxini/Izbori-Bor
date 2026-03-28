@@ -736,6 +736,83 @@
         }
         .firebase-status.connected .status-dot { background: var(--status-ok); }
         .firebase-status.disconnected .status-dot { background: var(--status-alert); }
+
+        /* ===== INCIDENT BADGES ON MAP MARKERS ===== */
+        .bm-circle { position: relative; }
+        .incident-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            min-width: 14px;
+            height: 14px;
+            border-radius: 7px;
+            background: var(--status-alert);
+            color: white;
+            font-size: 0.48rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+            border: 1.5px solid var(--bg-primary);
+            line-height: 1;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+        }
+
+        /* ===== ALERTS SECTION TABS ===== */
+        .alerts-tab-bar {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 6px;
+            flex-shrink: 0;
+        }
+        .alerts-tab-btn {
+            padding: 3px 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .alerts-tab-btn:hover { color: var(--text-primary); border-color: var(--accent-primary); }
+        .alerts-tab-btn.active { background: var(--accent-primary); border-color: var(--accent-primary); color: white; }
+        .alerts-tab-btn .tab-count {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            opacity: 0.8;
+        }
+
+        .incident-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.73rem;
+            background: rgba(239, 68, 68, 0.12);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .incident-item:hover { background: rgba(239, 68, 68, 0.22); }
+        .incident-bm { font-weight: 600; min-width: 28px; color: var(--text-secondary); }
+        .incident-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); }
+        .incident-count { font-family: var(--font-mono); font-weight: 700; min-width: 30px; text-align: right; color: #f87171; }
+
+        /* Incidents color scale for nepravilnosti filter */
+        .incident-swatch {
+            width: 16px;
+            height: 12px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
@@ -800,6 +877,11 @@
                 <div class="stat-card">
                     <span class="stat-label">Projekcija</span>
                     <span class="stat-value warning" id="projectedPct">—</span>
+                </div>
+
+                <div class="stat-card" id="incidentsCard" style="display:none;">
+                    <span class="stat-label">Nepravilnosti</span>
+                    <span class="stat-value" id="incidentsTotal" style="color: var(--status-alert);">0</span>
                 </div>
             </div>
 
@@ -866,8 +948,12 @@
                         </div>
                     </div>
                     <div class="alerts-section">
-                        <div class="section-title">Najveća odstupanja</div>
+                        <div class="alerts-tab-bar">
+                            <button class="alerts-tab-btn active" id="tabOdstupanja" onclick="switchAlertsTab('odstupanja')">Odstupanja</button>
+                            <button class="alerts-tab-btn" id="tabNepravilnosti" onclick="switchAlertsTab('nepravilnosti')">Nepravilnosti <span class="tab-count" id="tabIncidentCount"></span></button>
+                        </div>
                         <div class="alerts-list" id="alertsList"></div>
+                        <div class="alerts-list" id="incidentsList" style="display:none;"></div>
                     </div>
                 </div>
             </div>
@@ -964,6 +1050,12 @@
 
     let appInitialized = false;
 
+    let incidentsData = {};
+    let apiPollInterval = null;
+    let currentAlertsTab = 'odstupanja';
+    const API_URL = 'https://api.izbor.org/bor';
+    const API_AUTH = 'Basic ' + btoa('dash:@2^19937-1&izbor1se!!1');
+
     // ============================================
     // AUTH
     // ============================================
@@ -1035,6 +1127,7 @@
 
             initTurnoutData();
             setupFirebaseSync();
+            startApiPolling();
 
             document.getElementById('munName').textContent = munData.name;
 
@@ -1087,6 +1180,72 @@
     }
 
     // ============================================
+    // EXTERNAL API (incidents + results)
+    // ============================================
+
+    async function fetchApiData() {
+        try {
+            const resp = await fetch(API_URL, {
+                headers: { 'Authorization': API_AUTH }
+            });
+            if (!resp.ok) return;
+            const data = await resp.json();
+
+            const stations = [];
+            if (data.settlements) {
+                data.settlements.forEach(s => {
+                    if (s.stations) stations.push(...s.stations);
+                });
+            }
+
+            let totalIncidents = 0;
+            stations.forEach(st => {
+                const match = st.code && st.code.match(/_(\d+)$/);
+                if (!match) return;
+                const bmId = parseInt(match[1]);
+                const ti = (st.turnout && st.turnout.incidents) || 0;
+                const ri = (st.results && st.results.incidents) || 0;
+                const count = Math.max(ti, ri);
+                incidentsData[bmId] = { turnoutIncidents: ti, resultsIncidents: ri, total: count };
+                totalIncidents += count;
+            });
+
+            updateIncidentsUI(totalIncidents);
+        } catch (e) {
+            console.warn('API fetch failed:', e);
+        }
+    }
+
+    function updateIncidentsUI(totalIncidents) {
+        const card = document.getElementById('incidentsCard');
+        const el = document.getElementById('incidentsTotal');
+        if (totalIncidents > 0) {
+            card.style.display = '';
+            el.textContent = totalIncidents;
+            el.style.color = 'var(--status-alert)';
+        } else {
+            card.style.display = '';
+            el.textContent = '0';
+            el.style.color = 'var(--text-muted)';
+        }
+
+        const countEl = document.getElementById('tabIncidentCount');
+        const stationsWithIncidents = Object.values(incidentsData).filter(d => d.total > 0).length;
+        countEl.textContent = stationsWithIncidents > 0 ? `(${stationsWithIncidents})` : '';
+
+        renderIncidentsList();
+        updateBmCircleColors();
+        if (currentFilter === 'nepravilnosti') {
+            updateMapColors();
+        }
+    }
+
+    function startApiPolling() {
+        fetchApiData();
+        apiPollInterval = setInterval(fetchApiData, 60000);
+    }
+
+    // ============================================
     // FIREBASE REALTIME DATABASE
     // ============================================
 
@@ -1136,6 +1295,7 @@
         updateStats();
         renderTablePage();
         renderAlerts();
+        renderIncidentsList();
         updateMapColors();
         updateBmCircleColors();
         renderTrendChart();
@@ -1178,6 +1338,70 @@
             <span class="alert-name" title="${d.name}">${truncate(d.name, 20)}</span>
             <span class="alert-delta ${type}">${sign}${(d.delta * 100).toFixed(1)}%</span>
         </div>`;
+    }
+
+    // ============================================
+    // INCIDENTS LIST (NEPRAVILNOSTI TAB)
+    // ============================================
+
+    function renderIncidentsList() {
+        const container = document.getElementById('incidentsList');
+        if (!munData) return;
+
+        const items = munData.polling_stations
+            .map(ps => {
+                const inc = incidentsData[ps.br_bm];
+                return {
+                    bmId: ps.br_bm,
+                    name: ps.naziv || 'BM ' + ps.br_bm,
+                    count: inc ? inc.total : 0
+                };
+            })
+            .filter(d => d.count > 0)
+            .sort((a, b) => b.count - a.count);
+
+        if (items.length === 0) {
+            container.innerHTML = '<div style="color:var(--text-muted);font-size:0.75rem;padding:8px;">Nema prijavljenih nepravilnosti</div>';
+            return;
+        }
+
+        container.innerHTML = items.map(d =>
+            `<div class="incident-item" onclick="onIncidentClick(${d.bmId})">
+                <span class="incident-bm">${d.bmId}</span>
+                <span class="incident-name" title="${d.name}">${truncate(d.name, 20)}</span>
+                <span class="incident-count">${d.count}</span>
+            </div>`
+        ).join('');
+    }
+
+    function onIncidentClick(bmId) {
+        highlightBm(bmId);
+        scrollTableToBm(bmId);
+        if (bmLayers[bmId]) {
+            const layer = bmLayers[bmId];
+            if (layer.getBounds) electionMap.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 16 });
+            else if (layer.getLatLng) electionMap.setView(layer.getLatLng(), 15);
+        }
+    }
+
+    function switchAlertsTab(tab) {
+        currentAlertsTab = tab;
+        const btnOd = document.getElementById('tabOdstupanja');
+        const btnNe = document.getElementById('tabNepravilnosti');
+        const listAl = document.getElementById('alertsList');
+        const listIn = document.getElementById('incidentsList');
+
+        if (tab === 'odstupanja') {
+            btnOd.classList.add('active');
+            btnNe.classList.remove('active');
+            listAl.style.display = '';
+            listIn.style.display = 'none';
+        } else {
+            btnNe.classList.add('active');
+            btnOd.classList.remove('active');
+            listAl.style.display = 'none';
+            listIn.style.display = '';
+        }
     }
 
     // ============================================
@@ -1227,6 +1451,7 @@
             html += `<button class="filter-option" data-filter="presek_${i}" onclick="setFilter('presek', ${i})">Presek u ${s.replace(':00', 'h')}</button>`;
         });
         html += `<button class="filter-option" data-filter="prioritet" onclick="setFilter('prioritet', -1)">Prioritetnost</button>`;
+        html += `<button class="filter-option" data-filter="nepravilnosti" onclick="setFilter('nepravilnosti', -1)">Nepravilnosti</button>`;
         dd.innerHTML = html;
     }
 
@@ -1263,6 +1488,8 @@
             dd.querySelector('[data-filter="live"]').classList.add('active');
         } else if (filter === 'presek') {
             dd.querySelector(`[data-filter="presek_${presekIdx}"]`).classList.add('active');
+        } else if (filter === 'nepravilnosti') {
+            dd.querySelector('[data-filter="nepravilnosti"]').classList.add('active');
         } else {
             dd.querySelector('[data-filter="prioritet"]').classList.add('active');
         }
@@ -1270,6 +1497,7 @@
         const btn = document.getElementById('filterBtn');
         if (filter === 'live') btn.textContent = '\u25BC Live';
         else if (filter === 'presek') btn.textContent = '\u25BC ' + TIME_SLOTS[presekIdx].replace(':00', 'h');
+        else if (filter === 'nepravilnosti') btn.textContent = '\u25BC Nepravilnosti';
         else btn.textContent = '\u25BC Prioritet';
 
         updateLegend();
@@ -1281,7 +1509,14 @@
         const title = document.getElementById('legendTitle');
         const content = document.getElementById('legendContent');
 
-        if (currentFilter === 'prioritet') {
+        if (currentFilter === 'nepravilnosti') {
+            title.textContent = 'Nepravilnosti';
+            content.innerHTML = `
+                <div class="map-legend-item"><div class="incident-swatch" style="background:#dc2626"></div> 3+ nepravilnosti</div>
+                <div class="map-legend-item"><div class="incident-swatch" style="background:#ef4444"></div> 2 nepravilnosti</div>
+                <div class="map-legend-item"><div class="incident-swatch" style="background:#f97316"></div> 1 nepravilnost</div>
+                <div class="map-legend-item"><div class="incident-swatch" style="background:#1e293b"></div> Bez nepravilnosti</div>`;
+        } else if (currentFilter === 'prioritet') {
             title.textContent = 'Prioritetnost';
             content.innerHTML = Object.entries(PRIORITY_COLORS).map(([k, c]) =>
                 `<div class="map-legend-item"><div class="priority-swatch" style="background:${c}"></div> ${k}</div>`
@@ -1355,8 +1590,20 @@
         return 'cell-below-high';
     }
 
+    function incidentColor(count) {
+        if (count >= 3) return '#dc2626';
+        if (count === 2) return '#ef4444';
+        if (count === 1) return '#f97316';
+        return '#1e293b';
+    }
+
     function getBmColor(bmId) {
         if (isTerrainMode) return '#8b5cf6';
+
+        if (currentFilter === 'nepravilnosti') {
+            const inc = incidentsData[bmId];
+            return incidentColor(inc ? inc.total : 0);
+        }
 
         if (currentFilter === 'prioritet') {
             const ps = munData.polling_stations.find(p => p.br_bm === bmId);
@@ -1408,7 +1655,7 @@
                     return { fillOpacity: 0, color: '#8b5cf6', weight: 2, opacity: 0.8 };
                 }
                 const color = getBmColor(bmId);
-                const hasData = getFilteredTurnout(bmId).slotIndex >= 0 || currentFilter === 'prioritet';
+                const hasData = getFilteredTurnout(bmId).slotIndex >= 0 || currentFilter === 'prioritet' || currentFilter === 'nepravilnosti';
                 return {
                     fillColor: color,
                     fillOpacity: hasData ? 0.7 : 0.3,
@@ -1461,9 +1708,11 @@
             const bmId = loc.br_bm;
             const color = getBmColor(bmId);
 
+            const inc = incidentsData[bmId];
+            const badgeHtml = (inc && inc.total > 0) ? `<span class="incident-badge">${inc.total}</span>` : '';
             const icon = L.divIcon({
                 className: '',
-                html: `<div class="bm-circle" style="background:${color}">${bmId}</div>`,
+                html: `<div class="bm-circle" style="background:${color}">${bmId}${badgeHtml}</div>`,
                 iconSize: [26, 26],
                 iconAnchor: [13, 13]
             });
@@ -1497,7 +1746,21 @@
             const el = marker.getElement();
             if (el) {
                 const circle = el.querySelector('.bm-circle');
-                if (circle) circle.style.background = color;
+                if (circle) {
+                    circle.style.background = color;
+                    let badge = circle.querySelector('.incident-badge');
+                    const inc = incidentsData[id];
+                    if (inc && inc.total > 0) {
+                        if (!badge) {
+                            badge = document.createElement('span');
+                            badge.className = 'incident-badge';
+                            circle.appendChild(badge);
+                        }
+                        badge.textContent = inc.total;
+                    } else if (badge) {
+                        badge.remove();
+                    }
+                }
             }
         });
     }
@@ -1505,11 +1768,22 @@
     function updateTooltip(layer, bmId, ps) {
         const ft = getFilteredTurnout(bmId);
         const td = turnoutData[bmId];
+        const inc = incidentsData[bmId];
+        const incLine = (inc && inc.total > 0) ? `<br><span style="color:#f87171">Nepravilnosti: <b>${inc.total}</b></span>` : '';
+
+        if (currentFilter === 'nepravilnosti') {
+            const count = inc ? inc.total : 0;
+            layer.bindTooltip(`
+                <b>BM ${bmId}: ${ps.naziv || ''}</b><br>
+                Nepravilnosti: <b style="color:${count > 0 ? '#f87171' : '#94a3b8'}">${count}</b>
+            `, { className: 'bm-tooltip', sticky: true }).openTooltip();
+            return;
+        }
 
         if (currentFilter === 'prioritet') {
             layer.bindTooltip(`
                 <b>BM ${bmId}: ${ps.naziv || ''}</b><br>
-                Prioritet: <b>${ps.prioritet_lokalni || '—'}</b>
+                Prioritet: <b>${ps.prioritet_lokalni || '—'}</b>${incLine}
             `, { className: 'bm-tooltip', sticky: true }).openTooltip();
             return;
         }
@@ -1523,7 +1797,7 @@
             <b>BM ${bmId}: ${ps.naziv || ''}</b><br>
             Glasalo: <b>${ft.voted}</b> / ${td.registered} (${(ft.pct * 100).toFixed(1)}%)<br>
             Očekivano: ${expectedPct}%&nbsp;&nbsp;
-            <span class="${deltaClass}"><b>${deltaStr}</b></span>
+            <span class="${deltaClass}"><b>${deltaStr}</b></span>${incLine}
         `, { className: 'bm-tooltip', sticky: true }).openTooltip();
     }
 
@@ -1560,7 +1834,7 @@
                 layer.setStyle({ fillOpacity: 0, color: '#8b5cf6', weight: 2, opacity: 0.8 });
             } else {
                 const color = getBmColor(bmId);
-                const hasData = getFilteredTurnout(bmId).slotIndex >= 0 || currentFilter === 'prioritet';
+                const hasData = getFilteredTurnout(bmId).slotIndex >= 0 || currentFilter === 'prioritet' || currentFilter === 'nepravilnosti';
                 layer.setStyle({
                     fillColor: color,
                     fillOpacity: hasData ? 0.7 : 0.3,
@@ -1628,7 +1902,9 @@
 
     function renderTable() {
         const thead = document.getElementById('tableHead');
-        const lastColHeader = currentFilter === 'prioritet' ? 'Prior.' : 'Odst.';
+        let lastColHeader = 'Odst.';
+        if (currentFilter === 'prioritet') lastColHeader = 'Prior.';
+        else if (currentFilter === 'nepravilnosti') lastColHeader = 'Nepr.';
         thead.innerHTML = `<tr>
             <th>#</th><th>Biračko mesto</th><th>Birači</th>
             ${TIME_SLOTS.map(s => `<th>${s}</th>`).join('')}
@@ -1649,7 +1925,12 @@
         }).join('');
 
         let lastCell;
-        if (currentFilter === 'prioritet') {
+        if (currentFilter === 'nepravilnosti') {
+            const inc = incidentsData[ps.br_bm];
+            const count = inc ? inc.total : 0;
+            const incColor = count > 0 ? '#f87171' : 'var(--text-muted)';
+            lastCell = `<td style="font-weight:600;color:${incColor}">${count}</td>`;
+        } else if (currentFilter === 'prioritet') {
             const prio = ps.prioritet_lokalni || '—';
             const color = PRIORITY_COLORS[prio] || 'var(--text-muted)';
             lastCell = `<td style="font-weight:600;color:${color}">${prio}</td>`;
