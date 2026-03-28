@@ -1,8 +1,8 @@
 {
   "name": "БОР",
   "slug": "bor",
-  "bm_count": 47,
-  "total_voters": 39892,
+  "bm_count": 48,
+  "total_voters": 38511,
   "polling_stations": [
     {
       "br_bm": 1,
@@ -10,29 +10,29 @@
       "adresa": "БОР, КОЗАРАЧКА БР. 3А",
       "cat_2022": 3,
       "max_procena": 271.3,
-      "biraci": 808,
+      "biraci": 738,
       "prioritet": 5,
       "prioritet_lokalni": 5
     },
     {
       "br_bm": 2,
-      "naziv": "ЦЕНТАР ЗА СОЦИЈАЛНИ РАД",
+      "naziv": "МЗ \"СЕВЕР\"",
       "adresa": "БОР, ВОЈСКЕ ЈУГОСЛАВИЈЕ БР. 11",
       "cat_2022": 5,
       "max_procena": 319.62,
-      "biraci": 1097,
+      "biraci": 1059,
       "prioritet": 5,
       "prioritet_lokalni": 5
     },
     {
       "br_bm": 3,
-      "naziv": "ТЕХНИЧКИ ФАКУЛТЕТ - РУДАРСКИ ОДСЕК",
+      "naziv": "ТЕХНИЧКИ ФАКУЛТЕТ- РУДАРСКИ ОДСЕК",
       "adresa": "БОР, ВОЈСКЕ ЈУГОСЛАВИЈЕ БР. 15",
       "cat_2022": 3,
       "max_procena": 410.12,
-      "biraci": 1076,
+      "biraci": 1022,
       "prioritet": 5,
-      "prioritet_lokalni": 6
+      "prioritet_lokalni": 5
     },
     {
       "br_bm": 4,
@@ -40,7 +40,7 @@
       "adresa": "БОР, БОЖИНА ЈОВАНОВИЋА (БИВША КЕСТЕНОВА) БР. 3",
       "cat_2022": 6,
       "max_procena": 439.74,
-      "biraci": 1304,
+      "biraci": 1228,
       "prioritet": 5,
       "prioritet_lokalni": 5
     },
@@ -49,8 +49,8 @@
       "naziv": "МЗ \"СТАРИ ЦЕНТАР\"",
       "adresa": "БОР, БОЖИНА ЈОВАНОВИЋА (БИВША КЕСТЕНОВА) БР. 3",
       "cat_2022": 3,
-      "max_procena": 245,
-      "biraci": 661,
+      "max_procena": 245.0,
+      "biraci": 628,
       "prioritet": 5,
       "prioritet_lokalni": 5
     },
@@ -60,7 +60,7 @@
       "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 6",
       "cat_2022": 3,
       "max_procena": 306.78,
-      "biraci": 808,
+      "biraci": 777,
       "prioritet": 6,
       "prioritet_lokalni": 6
     },
@@ -70,7 +70,7 @@
       "adresa": "БОР, АЛБАНСКЕ СПОМЕНИЦЕ БР. 13",
       "cat_2022": 3,
       "max_procena": 385.14,
-      "biraci": 1007,
+      "biraci": 933,
       "prioritet": 6,
       "prioritet_lokalni": 6
     },
@@ -80,7 +80,7 @@
       "adresa": "БОР, ФИЛИПА ФИЛИПОВИЋА БР. 6",
       "cat_2022": 8,
       "max_procena": 364.4,
-      "biraci": 1057,
+      "biraci": 1022,
       "prioritet": 5,
       "prioritet_lokalni": 5
     },
@@ -90,9 +90,9 @@
       "adresa": "БОР, ЊЕГОШЕВА БР. 5А",
       "cat_2022": 3,
       "max_procena": 745.27,
-      "biraci": 1842,
+      "biraci": 1817,
       "prioritet": 3,
-      "prioritet_lokalni": 6
+      "prioritet_lokalni": 3
     },
     {
       "br_bm": 10,
@@ -100,17 +100,17 @@
       "adresa": "БОР, ЊЕГОШЕВА БР. 5А",
       "cat_2022": 3,
       "max_procena": 419.23,
-      "biraci": 1085,
+      "biraci": 1019,
       "prioritet": 3,
-      "prioritet_lokalni": 6
+      "prioritet_lokalni": 3
     },
     {
       "br_bm": 11,
       "naziv": "ОШ \"БРАНКО РАДИЧЕВИЋ\"",
       "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 31",
       "cat_2022": 2,
-      "max_procena": 477.80000000000007,
-      "biraci": 1177,
+      "max_procena": 477.8,
+      "biraci": 1147,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -119,10 +119,10 @@
       "naziv": "ОШ \"БРАНКО РАДИЧЕВИЋ\"",
       "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 31",
       "cat_2022": 3,
-      "max_procena": 480.34000000000003,
-      "biraci": 1235,
+      "max_procena": 480.34,
+      "biraci": 1209,
       "prioritet": 3,
-      "prioritet_lokalni": 6
+      "prioritet_lokalni": 3
     },
     {
       "br_bm": 13,
@@ -130,7 +130,7 @@
       "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 74",
       "cat_2022": 2,
       "max_procena": 361.87,
-      "biraci": 865,
+      "biraci": 843,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -150,7 +150,7 @@
       "adresa": "БОР, КРАЉА ПЕТРА ПРВОГ БР. 10",
       "cat_2022": 2,
       "max_procena": 340.38,
-      "biraci": 836,
+      "biraci": 825,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -159,8 +159,8 @@
       "naziv": "МЗ \"БАКАР\"",
       "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 76А",
       "cat_2022": 3,
-      "max_procena": 481.59000000000003,
-      "biraci": 1212,
+      "max_procena": 481.59,
+      "biraci": 1177,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -170,7 +170,7 @@
       "adresa": "БОР, МОШЕ ПИЈАДЕ БР. 31",
       "cat_2022": 2,
       "max_procena": 414.86,
-      "biraci": 1034,
+      "biraci": 995,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -180,7 +180,7 @@
       "adresa": "БОР, ТРЕЋИ ОКТОБАР БР. 71",
       "cat_2022": 1,
       "max_procena": 476.25,
-      "biraci": 1043,
+      "biraci": 1031,
       "prioritet": 1,
       "prioritet_lokalni": 1
     },
@@ -190,7 +190,7 @@
       "adresa": "БОР, ТРЕЋИ ОКТОБАР БР. 71",
       "cat_2022": 1,
       "max_procena": 536.51,
-      "biraci": 1223,
+      "biraci": 1184,
       "prioritet": 1,
       "prioritet_lokalni": 1
     },
@@ -200,7 +200,7 @@
       "adresa": "БОР, ЗАЈЕЧАРСКА ББ",
       "cat_2022": 2,
       "max_procena": 563.22,
-      "biraci": 1274,
+      "biraci": 1257,
       "prioritet": 2,
       "prioritet_lokalni": 2
     },
@@ -209,8 +209,8 @@
       "naziv": "МАШИНСКО ЕЛЕКТРОТЕХНИЧКА ШКОЛА",
       "adresa": "БОР, ЗЕЛЕНИ БУЛЕВАР БР. 24",
       "cat_2022": 2,
-      "max_procena": 561.4100000000001,
-      "biraci": 1280,
+      "max_procena": 561.41,
+      "biraci": 1242,
       "prioritet": 2,
       "prioritet_lokalni": 2
     },
@@ -220,7 +220,7 @@
       "adresa": "БОР, ЗЕЛЕНИ БУЛЕВАР БР. 26",
       "cat_2022": 1,
       "max_procena": 397.57,
-      "biraci": 866,
+      "biraci": 837,
       "prioritet": 1,
       "prioritet_lokalni": 1
     },
@@ -230,7 +230,7 @@
       "adresa": "БОР, ЗЕЛЕНИ БУЛЕВАР БР. 22",
       "cat_2022": 2,
       "max_procena": 263.31,
-      "biraci": 632,
+      "biraci": 617,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -240,9 +240,9 @@
       "adresa": "БОР, ЂОРЂА СИМЕОНОВИЋА БР. 2",
       "cat_2022": 7,
       "max_procena": 292.61,
-      "biraci": 819,
+      "biraci": 816,
       "prioritet": 6,
-      "prioritet_lokalni": 4
+      "prioritet_lokalni": 6
     },
     {
       "br_bm": 25,
@@ -250,9 +250,9 @@
       "adresa": "БОР, ВОЈВОДЕ РАДОМИРА ПУТНИКА БР. 4",
       "cat_2022": 7,
       "max_procena": 326.89,
-      "biraci": 844,
+      "biraci": 887,
       "prioritet": 3,
-      "prioritet_lokalni": 8
+      "prioritet_lokalni": 3
     },
     {
       "br_bm": 26,
@@ -260,17 +260,17 @@
       "adresa": "БОР, ДОБРИВОЈА РАДОСАВЉЕВИЋА БОБИЈА БР. 15",
       "cat_2022": 7,
       "max_procena": 468.52,
-      "biraci": 1214,
+      "biraci": 1206,
       "prioritet": 7,
-      "prioritet_lokalni": 8
+      "prioritet_lokalni": 7
     },
     {
       "br_bm": 27,
-      "naziv": "ПОСЛОВНИ ПРОСТОР",
+      "naziv": "ПОСЛОВНИ ПРОСТОР – ИНЖЕЊЕРСКА КОМОРА",
       "adresa": "БОР, ДОБРИВОЈА РАДОСАВЉЕВИЋА БОБИЈА БР. 46",
       "cat_2022": 2,
       "max_procena": 626.37,
-      "biraci": 1493,
+      "biraci": 1466,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -280,7 +280,7 @@
       "adresa": "БОР, ЉУБЕ НЕШИЋА БР. 23",
       "cat_2022": 2,
       "max_procena": 400.98,
-      "biraci": 919,
+      "biraci": 906,
       "prioritet": 2,
       "prioritet_lokalni": 2
     },
@@ -290,7 +290,7 @@
       "adresa": "ЗЛОТ",
       "cat_2022": 8,
       "max_procena": 161.99,
-      "biraci": 587,
+      "biraci": 584,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -300,7 +300,7 @@
       "adresa": "ЗЛОТ",
       "cat_2022": 8,
       "max_procena": 396.05,
-      "biraci": 1217,
+      "biraci": 1200,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -309,8 +309,8 @@
       "naziv": "ОШ НА \"КОБИЛИ\"",
       "adresa": "ЗЛОТ",
       "cat_2022": 8,
-      "max_procena": 69.77000000000001,
-      "biraci": 277,
+      "max_procena": 69.77,
+      "biraci": 249,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -320,7 +320,7 @@
       "adresa": "ЗЛОТ",
       "cat_2022": 8,
       "max_procena": 80.85,
-      "biraci": 309,
+      "biraci": 299,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -329,8 +329,8 @@
       "naziv": "ОШ \"СТАНОЈЕ МИЉКОВИЋ\"",
       "adresa": "ШАРБАНОВАЦ",
       "cat_2022": 8,
-      "max_procena": 252.40000000000003,
-      "biraci": 810,
+      "max_procena": 252.4,
+      "biraci": 784,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -339,8 +339,8 @@
       "naziv": "ОШ НА \"ТИМОКУ\"",
       "adresa": "ШАРБАНОВАЦ",
       "cat_2022": 8,
-      "max_procena": 100.51000000000002,
-      "biraci": 339,
+      "max_procena": 100.51,
+      "biraci": 332,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -349,8 +349,8 @@
       "naziv": "ДОМ КУЛТУРЕ",
       "adresa": "МЕТОВНИЦА",
       "cat_2022": 8,
-      "max_procena": 207.54000000000002,
-      "biraci": 728,
+      "max_procena": 207.54,
+      "biraci": 680,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -360,7 +360,7 @@
       "adresa": "БРЕСТОВАЦ",
       "cat_2022": 8,
       "max_procena": 275.72,
-      "biraci": 806,
+      "biraci": 689,
       "prioritet": 6,
       "prioritet_lokalni": 6
     },
@@ -369,8 +369,8 @@
       "naziv": "ОШ \"СТАНОЈЕ МИЉКОВИЋ\"",
       "adresa": "БРЕСТОВАЦ",
       "cat_2022": 7,
-      "max_procena": 316.06000000000006,
-      "biraci": 901,
+      "max_procena": 316.06,
+      "biraci": 855,
       "prioritet": 6,
       "prioritet_lokalni": 6
     },
@@ -380,9 +380,9 @@
       "adresa": "СЛАТИНА",
       "cat_2022": 3,
       "max_procena": 276.06,
-      "biraci": 720,
+      "biraci": 691,
       "prioritet": 7,
-      "prioritet_lokalni": 8
+      "prioritet_lokalni": 7
     },
     {
       "br_bm": 39,
@@ -390,7 +390,7 @@
       "adresa": "БУЧЈЕ",
       "cat_2022": 8,
       "max_procena": 110.45,
-      "biraci": 412,
+      "biraci": 371,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -400,7 +400,7 @@
       "adresa": "ДОЊА БЕЛА РЕКА",
       "cat_2022": 8,
       "max_procena": 136.25,
-      "biraci": 520,
+      "biraci": 514,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -410,7 +410,7 @@
       "adresa": "ЛУКА",
       "cat_2022": 8,
       "max_procena": 115.75,
-      "biraci": 430,
+      "biraci": 405,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -419,8 +419,8 @@
       "naziv": "ОШ \"ЂУРА ЈАКШИЋ\"",
       "adresa": "КРИВЕЉ",
       "cat_2022": 2,
-      "max_procena": 176.95000000000002,
-      "biraci": 454,
+      "max_procena": 176.95,
+      "biraci": 349,
       "prioritet": 3,
       "prioritet_lokalni": 3
     },
@@ -430,9 +430,9 @@
       "adresa": "МАЛИ КРИВЕЉ",
       "cat_2022": 3,
       "max_procena": 118.9,
-      "biraci": 289,
+      "biraci": 226,
       "prioritet": 2,
-      "prioritet_lokalni": 3
+      "prioritet_lokalni": 2
     },
     {
       "br_bm": 44,
@@ -440,7 +440,7 @@
       "adresa": "ОШТРЕЉ",
       "cat_2022": 3,
       "max_procena": 157.99,
-      "biraci": 443,
+      "biraci": 274,
       "prioritet": 4,
       "prioritet_lokalni": 4
     },
@@ -449,8 +449,8 @@
       "naziv": "ДОМ КУЛТУРЕ",
       "adresa": "ГОРЊАНЕ",
       "cat_2022": 8,
-      "max_procena": 121.94999999999999,
-      "biraci": 417,
+      "max_procena": 121.95,
+      "biraci": 394,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -460,7 +460,7 @@
       "adresa": "ГОРЊАНЕ",
       "cat_2022": 8,
       "max_procena": 48.49,
-      "biraci": 176,
+      "biraci": 175,
       "prioritet": 8,
       "prioritet_lokalni": 8
     },
@@ -469,10 +469,20 @@
       "naziv": "ДОМ КУЛТУРЕ",
       "adresa": "ТАНДА",
       "cat_2022": 8,
-      "max_procena": 68.83000000000001,
-      "biraci": 213,
+      "max_procena": 68.83,
+      "biraci": 211,
       "prioritet": 8,
       "prioritet_lokalni": 8
+    },
+    {
+      "br_bm": 48,
+      "naziv": "БОРСКО ЈЕЗЕРО",
+      "adresa": "",
+      "cat_2022": 0,
+      "max_procena": 0.0,
+      "biraci": 208,
+      "prioritet": 0,
+      "prioritet_lokalni": 0
     }
   ]
 }
