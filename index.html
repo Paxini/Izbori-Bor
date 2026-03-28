@@ -1269,7 +1269,12 @@
 
         turnoutRef.on('value', snapshot => {
             const data = snapshot.val();
-            if (!data) return;
+            Object.values(turnoutData).forEach(td => { td.slots.fill(null); });
+
+            if (!data) {
+                refreshAll();
+                return;
+            }
 
             Object.keys(data).forEach(bmId => {
                 const id = parseInt(bmId);
