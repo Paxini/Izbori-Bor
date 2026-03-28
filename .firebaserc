@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "izbori-bor-2026"
-  }
+  },
+  "targets": {
+    "izbori-bor-2026": {
+      "hosting": {
+        "main": [
+          "panel-b71ef7df"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

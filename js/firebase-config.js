@@ -1,6 +1,7 @@
 const firebaseConfig = {
     apiKey: "AIzaSyBB2yq4b2lLGhI8PMD7NuXkUa6qRHO1FoM",
     authDomain: "izbori-bor-2026.firebaseapp.com",
+    databaseURL: "https://izbori-bor-2026-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "izbori-bor-2026",
     storageBucket: "izbori-bor-2026.firebasestorage.app",
     messagingSenderId: "834953615970",

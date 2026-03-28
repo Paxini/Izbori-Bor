@@ -43,6 +43,71 @@
             font-family: var(--font-primary);
         }
 
+        /* ===== LOGIN SCREEN ===== */
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.4s;
+        }
+        .login-screen.fade-out { opacity: 0; pointer-events: none; }
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 360px;
+            text-align: center;
+        }
+        .login-card h1 {
+            font-size: 1.3rem;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .login-card input:focus { border-color: var(--accent-primary); }
+        .login-card button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 4px;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-family: var(--font-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .login-card button[type="submit"]:hover { background: #2563eb; }
+        .login-error {
+            color: var(--status-alert);
+            font-size: 0.8rem;
+            margin-top: 12px;
+            min-height: 20px;
+        }
+
+        /* ===== DASHBOARD ===== */
         .dashboard {
             display: grid;
             grid-template-rows: auto 1fr;
@@ -60,14 +125,12 @@
             border-bottom: 1px solid var(--border-color);
             min-height: 72px;
         }
-
         .stats-bar-left {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-shrink: 0;
         }
-
         .municipality-name {
             font-size: 1.3rem;
             font-weight: 700;
@@ -77,7 +140,6 @@
             background-clip: text;
             white-space: nowrap;
         }
-
         .stats-bar-center {
             display: flex;
             align-items: center;
@@ -87,7 +149,6 @@
             flex-wrap: nowrap;
             overflow: hidden;
         }
-
         .stat-card {
             display: flex;
             flex-direction: column;
@@ -99,7 +160,6 @@
             min-width: 100px;
             flex-shrink: 0;
         }
-
         .stat-label {
             font-size: 0.65rem;
             text-transform: uppercase;
@@ -107,14 +167,12 @@
             color: var(--text-muted);
             white-space: nowrap;
         }
-
         .stat-value {
             font-size: 1.3rem;
             font-weight: 700;
             font-family: var(--font-mono);
             white-space: nowrap;
         }
-
         .stat-value.turnout { color: var(--accent-primary); }
         .stat-value.clock { color: var(--text-primary); font-size: 1.15rem; }
         .stat-value.positive { color: var(--status-ok); }
@@ -126,9 +184,7 @@
             height: 48px;
             flex-shrink: 0;
         }
-
         .turnout-ring svg { transform: rotate(-90deg); }
-
         .turnout-ring-text {
             position: absolute;
             inset: 0;
@@ -141,13 +197,37 @@
         }
 
         .stats-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             flex-shrink: 0;
         }
-
-        .sparkline-container {
-            width: 120px;
-            height: 40px;
+        .sparkline-container { width: 120px; height: 40px; }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        .user-email {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .btn-logout {
+            padding: 3px 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.65rem;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-logout:hover { background: var(--status-alert); color: white; border-color: var(--status-alert); }
 
         /* ===== MAIN AREA ===== */
         .main-area {
@@ -162,10 +242,45 @@
             position: relative;
             border-right: 1px solid var(--border-color);
         }
+        .map-panel #electionMap { width: 100%; height: 100%; }
 
-        .map-panel #electionMap {
-            width: 100%;
-            height: 100%;
+        .terrain-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            padding: 6px 12px;
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.15s;
+        }
+        .terrain-btn:hover, .terrain-btn.active {
+            background: var(--accent-secondary);
+            border-color: var(--accent-secondary);
+            color: white;
+        }
+
+        /* BM circle markers */
+        .bm-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.9);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            line-height: 1;
         }
 
         .map-legend {
@@ -179,7 +294,6 @@
             z-index: 1000;
             backdrop-filter: blur(8px);
         }
-
         .map-legend-title {
             font-size: 0.7rem;
             text-transform: uppercase;
@@ -187,7 +301,6 @@
             color: var(--text-muted);
             margin-bottom: 6px;
         }
-
         .map-legend-item {
             display: flex;
             align-items: center;
@@ -196,18 +309,23 @@
             color: var(--text-secondary);
             padding: 2px 0;
         }
-
         .map-legend-swatch {
             width: 16px;
             height: 12px;
             border-radius: 2px;
             flex-shrink: 0;
         }
+        .priority-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
 
         /* ===== RIGHT PANEL ===== */
         .right-panel {
-            display: grid;
-            grid-template-rows: 1fr auto;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
@@ -217,8 +335,9 @@
             flex-direction: column;
             overflow: hidden;
             border-bottom: 1px solid var(--border-color);
+            flex: 1;
+            min-height: 0;
         }
-
         .table-header {
             display: flex;
             align-items: center;
@@ -228,7 +347,6 @@
             border-bottom: 1px solid var(--border-color);
             flex-shrink: 0;
         }
-
         .table-title {
             font-size: 0.8rem;
             font-weight: 600;
@@ -236,13 +354,11 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .table-controls {
             display: flex;
             gap: 8px;
             align-items: center;
         }
-
         .table-controls button {
             padding: 4px 10px;
             background: var(--bg-tertiary);
@@ -254,26 +370,66 @@
             cursor: pointer;
             transition: all 0.15s;
         }
-
         .table-controls button:hover,
         .table-controls button.active {
             background: var(--accent-primary);
             border-color: var(--accent-primary);
             color: white;
         }
-
         .page-indicator {
             font-size: 0.7rem;
             color: var(--text-muted);
             font-family: var(--font-mono);
         }
 
+        /* Filter dropdown */
+        .filter-wrapper { position: relative; }
+        .btn-filter {
+            padding: 4px 10px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            font-family: var(--font-primary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-filter:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+        .filter-dropdown {
+            position: fixed;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 4px;
+            z-index: 9000;
+            min-width: 180px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            display: none;
+        }
+        .filter-dropdown.open { display: block; }
+        .filter-option {
+            display: block;
+            width: 100%;
+            padding: 6px 12px;
+            background: none;
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-family: var(--font-primary);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .filter-option:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .filter-option.active { color: var(--accent-primary); font-weight: 600; }
+
         .table-scroll {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
         }
-
         .table-scroll::-webkit-scrollbar { width: 4px; }
         .table-scroll::-webkit-scrollbar-track { background: transparent; }
         .table-scroll::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
@@ -283,13 +439,11 @@
             border-collapse: collapse;
             font-size: 0.75rem;
         }
-
         .turnout-table thead {
             position: sticky;
             top: 0;
             z-index: 2;
         }
-
         .turnout-table th {
             background: var(--bg-tertiary);
             padding: 6px 8px;
@@ -302,7 +456,6 @@
             border-bottom: 1px solid var(--border-color);
             white-space: nowrap;
         }
-
         .turnout-table th:first-child,
         .turnout-table th:nth-child(2) { text-align: left; }
 
@@ -314,7 +467,6 @@
             font-size: 0.73rem;
             transition: background 0.15s;
         }
-
         .turnout-table td:first-child { text-align: center; width: 36px; color: var(--text-muted); }
         .turnout-table td:nth-child(2) { text-align: left; font-family: var(--font-primary); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .turnout-table td:nth-child(3) { color: var(--text-secondary); }
@@ -329,6 +481,10 @@
         .cell-below { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
         .cell-below-high { background: rgba(239, 68, 68, 0.35); color: #fca5a5; }
         .cell-empty { color: var(--text-muted); opacity: 0.4; }
+
+        .dev-cell { font-weight: 600; font-size: 0.7rem; }
+        .dev-cell.positive { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .dev-cell.negative { background: rgba(239, 68, 68, 0.15); color: #f87171; }
 
         /* Pinned rows */
         .turnout-table tbody tr.pinned {
@@ -385,14 +541,8 @@
             margin-bottom: 16px;
             flex-shrink: 0;
         }
-        .trend-overlay-header span:first-child {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        .trend-overlay-header .hint {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+        .trend-overlay-header span:first-child { font-size: 1.1rem; font-weight: 600; }
+        .trend-overlay-header .hint { font-size: 0.8rem; color: var(--text-muted); }
         .trend-overlay canvas { flex: 1; width: 100%; }
 
         /* Keyboard help overlay */
@@ -415,11 +565,7 @@
             max-width: 520px;
             width: 90%;
         }
-        .keyboard-help h2 {
-            font-size: 1rem;
-            margin-bottom: 16px;
-            color: var(--text-primary);
-        }
+        .keyboard-help h2 { font-size: 1rem; margin-bottom: 16px; color: var(--text-primary); }
         .shortcut-grid {
             display: grid;
             grid-template-columns: auto 1fr;
@@ -444,21 +590,18 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0;
-            min-height: 180px;
-            max-height: 220px;
+            flex: 1;
+            min-height: 0;
         }
-
         .chart-section, .alerts-section {
             padding: 10px 14px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
-
         .chart-section {
             border-right: 1px solid var(--border-color);
         }
-
         .section-title {
             font-size: 0.7rem;
             font-weight: 600;
@@ -467,12 +610,11 @@
             letter-spacing: 0.5px;
             margin-bottom: 6px;
         }
-
         .chart-canvas-wrap {
             width: 100%;
-            height: calc(100% - 22px);
+            flex: 1;
+            min-height: 0;
         }
-
         .alerts-list {
             display: flex;
             flex-direction: column;
@@ -481,7 +623,6 @@
             flex: 1;
             min-height: 0;
         }
-
         .alert-item {
             display: flex;
             align-items: center;
@@ -490,10 +631,8 @@
             border-radius: var(--radius-sm);
             font-size: 0.73rem;
         }
-
         .alert-item.negative { background: rgba(239, 68, 68, 0.12); }
         .alert-item.positive { background: rgba(16, 185, 129, 0.12); }
-
         .alert-bm { font-weight: 600; min-width: 28px; color: var(--text-secondary); }
         .alert-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); }
         .alert-delta { font-family: var(--font-mono); font-weight: 600; min-width: 55px; text-align: right; }
@@ -512,9 +651,7 @@
             z-index: 9999;
             transition: opacity 0.3s;
         }
-
         .loading-overlay.fade-out { opacity: 0; pointer-events: none; }
-
         .loading-spinner {
             width: 40px;
             height: 40px;
@@ -523,13 +660,11 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-
         .loading-text {
             margin-top: 12px;
             color: var(--text-secondary);
             font-size: 0.85rem;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Leaflet tooltip override */
@@ -543,20 +678,88 @@
             border-radius: var(--radius-sm);
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
-
         .leaflet-tooltip.bm-tooltip::before { border-top-color: rgba(17, 24, 39, 0.95); }
         .bm-tooltip b { color: var(--accent-primary); }
         .bm-tooltip .delta-pos { color: #34d399; }
         .bm-tooltip .delta-neg { color: #f87171; }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 11000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-primary);
+            font-size: 0.8rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            opacity: 0;
+            transform: translateX(40px);
+            transition: all 0.3s;
+            pointer-events: auto;
+        }
+        .toast.visible { opacity: 1; transform: translateX(0); }
+        .toast-success { background: #059669; }
+        .toast-error { background: #dc2626; }
+        .toast-delete { background: #d97706; }
+
+        /* ===== FIREBASE STATUS ===== */
+        .firebase-status {
+            position: fixed;
+            bottom: 12px;
+            right: 12px;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(4px);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--status-warn);
+        }
+        .firebase-status.connected .status-dot { background: var(--status-ok); }
+        .firebase-status.disconnected .status-dot { background: var(--status-alert); }
     </style>
 </head>
 <body>
 
-    <div class="loading-overlay" id="loadingOverlay">
+    <!-- LOGIN SCREEN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <h1>Izborni Dan — Bor 2026</h1>
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Lozinka" required>
+                <button type="submit">Prijava</button>
+            </form>
+            <div class="login-error" id="loginError"></div>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
         <div class="loading-spinner"></div>
         <div class="loading-text">Učitavanje izbornog dashboarda...</div>
     </div>
 
+    <!-- DASHBOARD -->
     <div class="dashboard" id="dashboard" style="display: none;">
         <!-- STATS BAR -->
         <div class="stats-bar">
@@ -602,6 +805,10 @@
 
             <div class="stats-bar-right">
                 <svg class="sparkline-container" id="sparkline" viewBox="0 0 120 40"></svg>
+                <div class="user-info">
+                    <span class="user-email" id="userEmail"></span>
+                    <button class="btn-logout" onclick="logout()">Odjava</button>
+                </div>
             </div>
         </div>
 
@@ -610,14 +817,17 @@
             <!-- MAP PANEL -->
             <div class="map-panel">
                 <div id="electionMap"></div>
-                <div class="map-legend">
-                    <div class="map-legend-title">Odstupanje od očekivane</div>
-                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#065f46"></div> &gt; +15%</div>
-                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#10b981"></div> +5% do +15%</div>
-                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#475569"></div> ±5% (očekivano)</div>
-                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#ef4444"></div> -5% do -15%</div>
-                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#7f1d1d"></div> &lt; -15%</div>
-                    <div class="map-legend-item"><div class="map-legend-swatch" style="background:#1e293b"></div> Nije prijavljeno</div>
+                <button class="terrain-btn" id="terrainBtn" onclick="toggleTerrain()">Teren</button>
+                <div class="map-legend" id="mapLegend">
+                    <div class="map-legend-title" id="legendTitle">Odstupanje od očekivane</div>
+                    <div id="legendContent">
+                        <div class="map-legend-item"><div class="map-legend-swatch" style="background:#065f46"></div> &gt; +15%</div>
+                        <div class="map-legend-item"><div class="map-legend-swatch" style="background:#10b981"></div> +5% do +15%</div>
+                        <div class="map-legend-item"><div class="map-legend-swatch" style="background:#475569"></div> ±5% (očekivano)</div>
+                        <div class="map-legend-item"><div class="map-legend-swatch" style="background:#ef4444"></div> -5% do -15%</div>
+                        <div class="map-legend-item"><div class="map-legend-swatch" style="background:#7f1d1d"></div> &lt; -15%</div>
+                        <div class="map-legend-item"><div class="map-legend-swatch" style="background:#1e293b"></div> Nije prijavljeno</div>
+                    </div>
                 </div>
             </div>
 
@@ -629,9 +839,13 @@
                     <div class="table-header">
                         <span class="table-title">Izlaznost po biračkim mestima</span>
                         <div class="table-controls">
+                            <div class="filter-wrapper">
+                                <button class="btn-filter" id="filterBtn" onclick="toggleFilterDropdown()">&#9660; Live</button>
+                                <div class="filter-dropdown" id="filterDropdown"></div>
+                            </div>
                             <span class="page-indicator" id="pageIndicator"></span>
-                            <button id="prevPageBtn" title="Prethodna strana">◀</button>
-                            <button id="nextPageBtn" title="Sledeća strana">▶</button>
+                            <button id="prevPageBtn" title="Prethodna strana">&#9664;</button>
+                            <button id="nextPageBtn" title="Sledeća strana">&#9654;</button>
                             <button id="autoPageBtn" title="Auto rotacija stranica">Auto</button>
                         </div>
                     </div>
@@ -660,7 +874,7 @@
         </div>
     </div>
 
-    <!-- Trend overlay -->
+    <!-- TREND OVERLAY -->
     <div class="trend-overlay" id="trendOverlay">
         <div class="trend-overlay-header">
             <span>Trend izlaznosti</span>
@@ -669,19 +883,20 @@
         <canvas id="trendChartLarge"></canvas>
     </div>
 
-    <!-- Keyboard help overlay -->
+    <!-- KEYBOARD HELP -->
     <div class="keyboard-help" id="keyboardHelp">
         <div class="keyboard-help-inner">
             <h2>Tastaturne prečice</h2>
             <div class="shortcut-grid">
                 <span class="shortcut-key">0-9</span><span class="shortcut-desc">Brzi skok na BM po broju</span>
-                <span class="shortcut-key">Enter</span><span class="shortcut-desc">Potvrdi unos broja BM</span>
+                <span class="shortcut-key">Enter</span><span class="shortcut-desc">Potvrdi unos broja BM / prijavu</span>
                 <span class="shortcut-key">P</span><span class="shortcut-desc">Pinuj / otpinuj BM</span>
-                <span class="shortcut-key">←  →</span><span class="shortcut-desc">Prethodna / sledeća stranica</span>
+                <span class="shortcut-key">&#8592;  &#8594;</span><span class="shortcut-desc">Prethodna / sledeća stranica</span>
                 <span class="shortcut-key">A</span><span class="shortcut-desc">Auto-rotacija stranica</span>
                 <span class="shortcut-key">R</span><span class="shortcut-desc">Reset zoom mape</span>
                 <span class="shortcut-key">C</span><span class="shortcut-desc">Zoom na centar grada</span>
                 <span class="shortcut-key">T</span><span class="shortcut-desc">Uvećaj trend grafikon</span>
+                <span class="shortcut-key">M</span><span class="shortcut-desc">Teren / standardna mapa</span>
                 <span class="shortcut-key">F</span><span class="shortcut-desc">Fullscreen (browser)</span>
                 <span class="shortcut-key">?</span><span class="shortcut-desc">Prikaži ovu pomoć</span>
                 <span class="shortcut-key">Esc</span><span class="shortcut-desc">Zatvori / poništi</span>
@@ -689,8 +904,19 @@
         </div>
     </div>
 
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- FIREBASE STATUS -->
+    <div class="firebase-status" id="firebaseStatus" style="display:none;">
+        <span class="status-dot"></span>
+        <span class="status-text" id="statusText">Povezivanje...</span>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
     <script src="js/firebase-config.js"></script>
 
     <script>
@@ -705,6 +931,10 @@
     const TIME_SLOTS = ['09:00', '11:00', '13:00', '15:00', '17:00', '19:00'];
     const EXPECTED_CURVE = [0.15, 0.25, 0.38, 0.50, 0.60, 0.68];
     const CIRCUMFERENCE = 2 * Math.PI * 20;
+    const PRIORITY_COLORS = {
+        1: '#16a34a', 2: '#22c55e', 3: '#84cc16', 4: '#eab308',
+        5: '#f59e0b', 6: '#f97316', 7: '#ef4444', 8: '#dc2626'
+    };
 
     const municipalitySlug = 'bor';
     let munData = null;
@@ -714,22 +944,88 @@
     let electionMap = null;
     let geojsonLayer = null;
     let bmLayers = {};
+    let bmCircleMarkers = {};
     let highlightedBm = null;
+    let clickedOnFeature = false;
 
     let currentPage = 0;
     let pageSize = 15;
     let autoPageInterval = null;
-
     let pinnedBmIds = new Set();
 
     let numBuffer = '';
     let numBufferTimeout = null;
 
+    let currentFilter = 'live';
+    let currentPresekSlot = -1;
+
+    let isTerrainMode = false;
+    let currentTileLayer = null;
+
+    let appInitialized = false;
+
+    // ============================================
+    // AUTH
+    // ============================================
+
+    document.getElementById('loginForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const errorEl = document.getElementById('loginError');
+        errorEl.textContent = '';
+
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .catch(err => {
+                switch (err.code) {
+                    case 'auth/wrong-password':
+                    case 'auth/invalid-credential':
+                        errorEl.textContent = 'Pogrešna lozinka'; break;
+                    case 'auth/user-not-found':
+                        errorEl.textContent = 'Korisnik nije pronađen'; break;
+                    case 'auth/too-many-requests':
+                        errorEl.textContent = 'Previše pokušaja, pokušajte kasnije'; break;
+                    default:
+                        errorEl.textContent = err.message;
+                }
+            });
+    });
+
+    firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+            const loginEl = document.getElementById('loginScreen');
+            loginEl.classList.add('fade-out');
+            setTimeout(() => { loginEl.style.display = 'none'; }, 400);
+
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('firebaseStatus').style.display = 'flex';
+
+            if (!appInitialized) {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                initApp();
+                appInitialized = true;
+            } else {
+                document.getElementById('dashboard').style.display = 'grid';
+            }
+        } else {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('firebaseStatus').style.display = 'none';
+            const loginEl = document.getElementById('loginScreen');
+            loginEl.classList.remove('fade-out');
+            loginEl.style.display = 'flex';
+        }
+    });
+
+    function logout() {
+        firebase.auth().signOut().then(() => window.location.reload());
+    }
+
     // ============================================
     // INIT
     // ============================================
 
-    document.addEventListener('DOMContentLoaded', async () => {
+    async function initApp() {
         try {
             const resp = await fetch('data/bor.json');
             if (!resp.ok) throw new Error('Podaci nisu pronađeni');
@@ -737,13 +1033,14 @@
 
             await Promise.all([loadGeoJSON(), loadLocations()]);
 
-            generateRandomTurnout();
+            initTurnoutData();
+            setupFirebaseSync();
 
             document.getElementById('munName').textContent = munData.name;
 
+            buildFilterDropdown();
             renderTable();
             updateStats();
-            renderAlerts();
             startClock();
             setupPagination();
 
@@ -762,14 +1059,14 @@
                 }, 250));
                 const overlay = document.getElementById('loadingOverlay');
                 overlay.classList.add('fade-out');
-                setTimeout(() => overlay.remove(), 300);
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
             });
 
         } catch (err) {
             console.error('Init error:', err);
             document.querySelector('.loading-text').textContent = 'Greška: ' + err.message;
         }
-    });
+    }
 
     // ============================================
     // DATA LOADING
@@ -779,57 +1076,27 @@
         try {
             const resp = await fetch('data/bor.geojson');
             if (resp.ok) geojsonData = await resp.json();
-        } catch (e) {
-            console.warn('GeoJSON not available:', e);
-        }
+        } catch (e) { /* GeoJSON not available */ }
     }
 
     async function loadLocations() {
         try {
             const resp = await fetch('data/locations.json');
             if (resp.ok) locationsData = await resp.json();
-        } catch (e) {
-            console.warn('Locations not available:', e);
-        }
+        } catch (e) { /* Locations not available */ }
     }
 
     // ============================================
-    // RANDOM TURNOUT GENERATION
+    // FIREBASE REALTIME DATABASE
     // ============================================
 
-    function generateRandomTurnout() {
-        const now = new Date();
-        const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
-        let reportedSlots = 0;
-        const slotMinutes = [540, 660, 780, 900, 1020, 1140];
-        for (const sm of slotMinutes) {
-            if (currentMinutes >= sm) reportedSlots++;
-        }
-        reportedSlots = Math.max(reportedSlots, 4);
-
+    function initTurnoutData() {
         munData.polling_stations.forEach(ps => {
-            const bmId = ps.br_bm;
             const registered = ps.biraci || 500;
             const maxEst = ps.max_procena || registered * 0.6;
             const expectedFinalRate = Math.min(maxEst / registered, 0.85);
-
-            const biasFactor = 0.7 + Math.random() * 0.6;
-
-            const slots = [];
-            for (let i = 0; i < TIME_SLOTS.length; i++) {
-                if (i < reportedSlots) {
-                    const baseRate = EXPECTED_CURVE[i] * expectedFinalRate;
-                    const noise = (Math.random() - 0.5) * 0.06;
-                    const actualRate = Math.max(0.02, Math.min(0.95, baseRate * biasFactor + noise));
-                    slots.push(Math.round(actualRate * registered));
-                } else {
-                    slots.push(null);
-                }
-            }
-
-            turnoutData[bmId] = {
-                slots,
+            turnoutData[ps.br_bm] = {
+                slots: new Array(TIME_SLOTS.length).fill(null),
                 registered,
                 expectedRates: EXPECTED_CURVE.map(c => c * expectedFinalRate),
                 expectedFinalRate
@@ -837,19 +1104,225 @@
         });
     }
 
+    function setupFirebaseSync() {
+        const db = firebase.database();
+        const turnoutRef = db.ref('turnout');
+
+        turnoutRef.on('value', snapshot => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            Object.keys(data).forEach(bmId => {
+                const id = parseInt(bmId);
+                if (!turnoutData[id]) return;
+                const bmData = data[bmId];
+                if (bmData) {
+                    for (let i = 0; i < TIME_SLOTS.length; i++) {
+                        const val = bmData[String(i)];
+                        turnoutData[id].slots[i] = (val !== undefined && val !== null) ? val : null;
+                    }
+                }
+            });
+
+            refreshAll();
+        });
+
+        db.ref('.info/connected').on('value', snap => {
+            updateFirebaseStatus(snap.val() === true);
+        });
+    }
+
+    function refreshAll() {
+        updateStats();
+        renderTablePage();
+        renderAlerts();
+        updateMapColors();
+        updateBmCircleColors();
+        renderTrendChart();
+        renderSparkline();
+    }
+
+    // ============================================
+    // ALERTS (NAJVEĆA ODSTUPANJA)
+    // ============================================
+
+    function renderAlerts() {
+        const deviations = munData.polling_stations.map(ps => ({
+            bmId: ps.br_bm,
+            name: ps.naziv || 'BM ' + ps.br_bm,
+            delta: getFilteredDeviation(ps.br_bm),
+            hasData: getFilteredTurnout(ps.br_bm).slotIndex >= 0
+        })).filter(d => d.hasData);
+
+        deviations.sort((a, b) => a.delta - b.delta);
+
+        const container = document.getElementById('alertsList');
+        const itemH = 24;
+        const availableH = container.parentElement.clientHeight - 28;
+        const maxItems = Math.max(4, Math.floor(availableH / itemH));
+        const half = Math.floor(maxItems / 2);
+
+        const worst = deviations.slice(0, half);
+        const best = deviations.slice(-half).reverse();
+
+        container.innerHTML = [
+            ...worst.map(d => alertHTML(d, 'negative')),
+            ...best.map(d => alertHTML(d, 'positive'))
+        ].join('');
+    }
+
+    function alertHTML(d, type) {
+        const sign = d.delta >= 0 ? '+' : '';
+        return `<div class="alert-item ${type}">
+            <span class="alert-bm">${d.bmId}</span>
+            <span class="alert-name" title="${d.name}">${truncate(d.name, 20)}</span>
+            <span class="alert-delta ${type}">${sign}${(d.delta * 100).toFixed(1)}%</span>
+        </div>`;
+    }
+
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => toast.classList.add('visible'));
+
+        setTimeout(() => {
+            toast.classList.remove('visible');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ============================================
+    // FIREBASE STATUS INDICATOR
+    // ============================================
+
+    function updateFirebaseStatus(connected) {
+        const el = document.getElementById('firebaseStatus');
+        const text = document.getElementById('statusText');
+        el.classList.remove('connected', 'disconnected');
+        if (connected) {
+            el.classList.add('connected');
+            text.textContent = 'Povezano';
+        } else {
+            el.classList.add('disconnected');
+            text.textContent = 'Offline';
+        }
+    }
+
+    // ============================================
+    // FILTER SYSTEM
+    // ============================================
+
+    function buildFilterDropdown() {
+        const dd = document.getElementById('filterDropdown');
+        let html = `<button class="filter-option active" data-filter="live" onclick="setFilter('live', -1)">&#9654; Live (najnovije)</button>`;
+        TIME_SLOTS.forEach((s, i) => {
+            html += `<button class="filter-option" data-filter="presek_${i}" onclick="setFilter('presek', ${i})">Presek u ${s.replace(':00', 'h')}</button>`;
+        });
+        html += `<button class="filter-option" data-filter="prioritet" onclick="setFilter('prioritet', -1)">Prioritetnost</button>`;
+        dd.innerHTML = html;
+    }
+
+    function toggleFilterDropdown() {
+        const dd = document.getElementById('filterDropdown');
+        const btn = document.getElementById('filterBtn');
+        if (dd.classList.contains('open')) {
+            dd.classList.remove('open');
+            return;
+        }
+        const rect = btn.getBoundingClientRect();
+        dd.style.top = (rect.bottom + 4) + 'px';
+        dd.style.left = rect.left + 'px';
+        dd.classList.add('open');
+
+        const closeHandler = e => {
+            if (!dd.contains(e.target) && e.target !== btn) {
+                dd.classList.remove('open');
+                document.removeEventListener('click', closeHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', closeHandler), 0);
+    }
+
+    function setFilter(filter, presekIdx) {
+        currentFilter = filter;
+        currentPresekSlot = presekIdx;
+
+        document.getElementById('filterDropdown').classList.remove('open');
+
+        const dd = document.getElementById('filterDropdown');
+        dd.querySelectorAll('.filter-option').forEach(opt => opt.classList.remove('active'));
+        if (filter === 'live') {
+            dd.querySelector('[data-filter="live"]').classList.add('active');
+        } else if (filter === 'presek') {
+            dd.querySelector(`[data-filter="presek_${presekIdx}"]`).classList.add('active');
+        } else {
+            dd.querySelector('[data-filter="prioritet"]').classList.add('active');
+        }
+
+        const btn = document.getElementById('filterBtn');
+        if (filter === 'live') btn.textContent = '\u25BC Live';
+        else if (filter === 'presek') btn.textContent = '\u25BC ' + TIME_SLOTS[presekIdx].replace(':00', 'h');
+        else btn.textContent = '\u25BC Prioritet';
+
+        updateLegend();
+        renderTable();
+        refreshAll();
+    }
+
+    function updateLegend() {
+        const title = document.getElementById('legendTitle');
+        const content = document.getElementById('legendContent');
+
+        if (currentFilter === 'prioritet') {
+            title.textContent = 'Prioritetnost';
+            content.innerHTML = Object.entries(PRIORITY_COLORS).map(([k, c]) =>
+                `<div class="map-legend-item"><div class="priority-swatch" style="background:${c}"></div> ${k}</div>`
+            ).join('');
+        } else {
+            title.textContent = 'Odstupanje od očekivane';
+            content.innerHTML = `
+                <div class="map-legend-item"><div class="map-legend-swatch" style="background:#065f46"></div> &gt; +15%</div>
+                <div class="map-legend-item"><div class="map-legend-swatch" style="background:#10b981"></div> +5% do +15%</div>
+                <div class="map-legend-item"><div class="map-legend-swatch" style="background:#475569"></div> ±5% (očekivano)</div>
+                <div class="map-legend-item"><div class="map-legend-swatch" style="background:#ef4444"></div> -5% do -15%</div>
+                <div class="map-legend-item"><div class="map-legend-swatch" style="background:#7f1d1d"></div> &lt; -15%</div>
+                <div class="map-legend-item"><div class="map-legend-swatch" style="background:#1e293b"></div> Nije prijavljeno</div>`;
+        }
+    }
+
+    // ============================================
+    // TURNOUT HELPERS
+    // ============================================
+
     function getLatestTurnout(bmId) {
         const td = turnoutData[bmId];
         if (!td) return { voted: 0, pct: 0, slotIndex: -1 };
         for (let i = td.slots.length - 1; i >= 0; i--) {
             if (td.slots[i] !== null) {
-                return {
-                    voted: td.slots[i],
-                    pct: td.slots[i] / td.registered,
-                    slotIndex: i
-                };
+                return { voted: td.slots[i], pct: td.slots[i] / td.registered, slotIndex: i };
             }
         }
         return { voted: 0, pct: 0, slotIndex: -1 };
+    }
+
+    function getFilteredTurnout(bmId) {
+        const td = turnoutData[bmId];
+        if (!td) return { voted: 0, pct: 0, slotIndex: -1 };
+
+        if (currentFilter === 'presek') {
+            const v = td.slots[currentPresekSlot];
+            if (v === null || v === undefined) return { voted: 0, pct: 0, slotIndex: -1 };
+            return { voted: v, pct: v / td.registered, slotIndex: currentPresekSlot };
+        }
+        return getLatestTurnout(bmId);
     }
 
     function getDeviation(bmId) {
@@ -857,6 +1330,13 @@
         if (latest.slotIndex < 0) return 0;
         const expected = turnoutData[bmId].expectedRates[latest.slotIndex];
         return latest.pct - expected;
+    }
+
+    function getFilteredDeviation(bmId) {
+        const ft = getFilteredTurnout(bmId);
+        if (ft.slotIndex < 0) return 0;
+        const expected = turnoutData[bmId].expectedRates[ft.slotIndex];
+        return ft.pct - expected;
     }
 
     function deviationColor(delta) {
@@ -875,6 +1355,19 @@
         return 'cell-below-high';
     }
 
+    function getBmColor(bmId) {
+        if (isTerrainMode) return '#8b5cf6';
+
+        if (currentFilter === 'prioritet') {
+            const ps = munData.polling_stations.find(p => p.br_bm === bmId);
+            return PRIORITY_COLORS[ps?.prioritet_lokalni] || '#475569';
+        }
+
+        const ft = getFilteredTurnout(bmId);
+        if (ft.slotIndex < 0) return '#1e293b';
+        return deviationColor(getFilteredDeviation(bmId));
+    }
+
     // ============================================
     // MAP
     // ============================================
@@ -883,9 +1376,9 @@
         electionMap = L.map('electionMap', {
             zoomControl: false,
             attributionControl: false
-        }).setView([44.0, 20.9], 10);
+        }).setView([44.08, 22.09], 12);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             maxZoom: 19
         }).addTo(electionMap);
 
@@ -893,19 +1386,31 @@
 
         if (geojsonData) {
             renderGeoJSON();
-        } else if (locationsData) {
-            renderLocationMarkers();
         }
+
+        if (locationsData) {
+            renderBmCircles();
+        }
+
+        electionMap.on('click', () => {
+            if (!clickedOnFeature) {
+                deselectBm();
+            }
+            clickedOnFeature = false;
+        });
     }
 
     function renderGeoJSON() {
         geojsonLayer = L.geoJSON(geojsonData, {
             style: feature => {
                 const bmId = getBmIdFromFeature(feature);
-                const delta = getDeviation(bmId);
-                const hasData = getLatestTurnout(bmId).slotIndex >= 0;
+                if (isTerrainMode) {
+                    return { fillOpacity: 0, color: '#8b5cf6', weight: 2, opacity: 0.8 };
+                }
+                const color = getBmColor(bmId);
+                const hasData = getFilteredTurnout(bmId).slotIndex >= 0 || currentFilter === 'prioritet';
                 return {
-                    fillColor: hasData ? deviationColor(delta) : '#1e293b',
+                    fillColor: color,
                     fillOpacity: hasData ? 0.7 : 0.3,
                     color: '#94a3b8',
                     weight: 2,
@@ -927,11 +1432,12 @@
 
                 layer.on('mouseout', () => {
                     if (highlightedBm !== bmId) {
-                        layer.setStyle({ weight: 2, color: '#94a3b8', opacity: 0.9 });
+                        geojsonLayer.resetStyle(layer);
                     }
                 });
 
                 layer.on('click', () => {
+                    clickedOnFeature = true;
                     highlightBm(bmId);
                     scrollTableToBm(bmId);
                 });
@@ -941,7 +1447,7 @@
         electionMap.fitBounds(geojsonLayer.getBounds(), { padding: [20, 20] });
     }
 
-    function renderLocationMarkers() {
+    function renderBmCircles() {
         if (!locationsData) return;
         const points = Array.isArray(locationsData) ? locationsData :
             (locationsData.features ? locationsData.features.map(f => ({
@@ -953,47 +1459,69 @@
         const bounds = [];
         points.forEach(loc => {
             const bmId = loc.br_bm;
-            const delta = getDeviation(bmId);
-            const hasData = getLatestTurnout(bmId).slotIndex >= 0;
-            const color = hasData ? deviationColor(delta) : '#1e293b';
+            const color = getBmColor(bmId);
 
-            const marker = L.circleMarker([loc.lat, loc.lon], {
-                radius: 7,
-                fillColor: color,
-                fillOpacity: 0.8,
-                color: '#2d3a4f',
-                weight: 1.5
-            }).addTo(electionMap);
+            const icon = L.divIcon({
+                className: '',
+                html: `<div class="bm-circle" style="background:${color}">${bmId}</div>`,
+                iconSize: [26, 26],
+                iconAnchor: [13, 13]
+            });
 
-            bmLayers[bmId] = marker;
+            const marker = L.marker([loc.lat, loc.lon], { icon }).addTo(electionMap);
+            bmCircleMarkers[bmId] = marker;
+            if (!bmLayers[bmId]) bmLayers[bmId] = marker;
             bounds.push([loc.lat, loc.lon]);
 
             const ps = munData.polling_stations.find(p => p.br_bm === bmId);
             if (ps) {
                 marker.on('mouseover', () => updateTooltip(marker, bmId, ps));
                 marker.on('click', () => {
+                    clickedOnFeature = true;
                     highlightBm(bmId);
                     scrollTableToBm(bmId);
                 });
             }
         });
 
-        if (bounds.length > 0) {
+        if (bounds.length > 0 && !geojsonData) {
             electionMap.fitBounds(bounds, { padding: [30, 30] });
         }
     }
 
+    function updateBmCircleColors() {
+        Object.keys(bmCircleMarkers).forEach(bmId => {
+            const id = parseInt(bmId);
+            const color = getBmColor(id);
+            const marker = bmCircleMarkers[bmId];
+            const el = marker.getElement();
+            if (el) {
+                const circle = el.querySelector('.bm-circle');
+                if (circle) circle.style.background = color;
+            }
+        });
+    }
+
     function updateTooltip(layer, bmId, ps) {
-        const latest = getLatestTurnout(bmId);
+        const ft = getFilteredTurnout(bmId);
         const td = turnoutData[bmId];
-        const delta = getDeviation(bmId);
+
+        if (currentFilter === 'prioritet') {
+            layer.bindTooltip(`
+                <b>BM ${bmId}: ${ps.naziv || ''}</b><br>
+                Prioritet: <b>${ps.prioritet_lokalni || '—'}</b>
+            `, { className: 'bm-tooltip', sticky: true }).openTooltip();
+            return;
+        }
+
+        const delta = getFilteredDeviation(bmId);
         const deltaStr = (delta >= 0 ? '+' : '') + (delta * 100).toFixed(1) + '%';
         const deltaClass = delta >= 0 ? 'delta-pos' : 'delta-neg';
-        const expectedPct = latest.slotIndex >= 0 ? (td.expectedRates[latest.slotIndex] * 100).toFixed(1) : '—';
+        const expectedPct = ft.slotIndex >= 0 ? (td.expectedRates[ft.slotIndex] * 100).toFixed(1) : '—';
 
         layer.bindTooltip(`
             <b>BM ${bmId}: ${ps.naziv || ''}</b><br>
-            Glasalo: <b>${latest.voted}</b> / ${td.registered} (${(latest.pct * 100).toFixed(1)}%)<br>
+            Glasalo: <b>${ft.voted}</b> / ${td.registered} (${(ft.pct * 100).toFixed(1)}%)<br>
             Očekivano: ${expectedPct}%&nbsp;&nbsp;
             <span class="${deltaClass}"><b>${deltaStr}</b></span>
         `, { className: 'bm-tooltip', sticky: true }).openTooltip();
@@ -1001,7 +1529,8 @@
 
     function getBmIdFromFeature(feature) {
         const props = feature.properties;
-        return props.br_bm || props.BM || props.id || props.BR_BM || 0;
+        const raw = props.br_bm || props.BM || props.id || props.BR_BM || 0;
+        return typeof raw === 'string' ? parseInt(raw, 10) : raw;
     }
 
     function highlightBm(bmId) {
@@ -1012,7 +1541,7 @@
         document.querySelectorAll('.turnout-table tbody tr.highlighted').forEach(r => r.classList.remove('highlighted'));
 
         highlightedBm = bmId;
-        if (bmLayers[bmId]) {
+        if (bmId && bmLayers[bmId]) {
             const layer = bmLayers[bmId];
             if (layer.setStyle) layer.setStyle({ weight: 3, color: '#3b82f6', opacity: 1 });
             if (layer.bringToFront) layer.bringToFront();
@@ -1022,18 +1551,52 @@
     }
 
     function updateMapColors() {
-        Object.keys(bmLayers).forEach(bmId => {
-            const id = parseInt(bmId);
-            const delta = getDeviation(id);
-            const hasData = getLatestTurnout(id).slotIndex >= 0;
-            const layer = bmLayers[bmId];
-            if (layer.setStyle) {
+        if (!geojsonLayer) return;
+        geojsonLayer.eachLayer(layer => {
+            const feature = layer.feature;
+            if (!feature) return;
+            const bmId = getBmIdFromFeature(feature);
+            if (isTerrainMode) {
+                layer.setStyle({ fillOpacity: 0, color: '#8b5cf6', weight: 2, opacity: 0.8 });
+            } else {
+                const color = getBmColor(bmId);
+                const hasData = getFilteredTurnout(bmId).slotIndex >= 0 || currentFilter === 'prioritet';
                 layer.setStyle({
-                    fillColor: hasData ? deviationColor(delta) : '#1e293b',
-                    fillOpacity: hasData ? 0.7 : 0.3
+                    fillColor: color,
+                    fillOpacity: hasData ? 0.7 : 0.3,
+                    color: '#94a3b8',
+                    weight: 2,
+                    opacity: 0.9
                 });
             }
         });
+    }
+
+    // ============================================
+    // TERRAIN MODE
+    // ============================================
+
+    function toggleTerrain() {
+        isTerrainMode = !isTerrainMode;
+
+        if (currentTileLayer) electionMap.removeLayer(currentTileLayer);
+
+        if (isTerrainMode) {
+            currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+                maxZoom: 19
+            }).addTo(electionMap);
+            document.getElementById('terrainBtn').classList.add('active');
+        } else {
+            currentTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19
+            }).addTo(electionMap);
+            document.getElementById('terrainBtn').classList.remove('active');
+        }
+
+        if (geojsonLayer) currentTileLayer.bringToBack();
+
+        updateMapColors();
+        updateBmCircleColors();
     }
 
     // ============================================
@@ -1065,9 +1628,11 @@
 
     function renderTable() {
         const thead = document.getElementById('tableHead');
+        const lastColHeader = currentFilter === 'prioritet' ? 'Prior.' : 'Odst.';
         thead.innerHTML = `<tr>
             <th>#</th><th>Biračko mesto</th><th>Birači</th>
             ${TIME_SLOTS.map(s => `<th>${s}</th>`).join('')}
+            <th>${lastColHeader}</th>
         </tr>`;
         renderTablePage();
     }
@@ -1075,18 +1640,38 @@
     function buildRowHtml(ps, isPinned) {
         const td = turnoutData[ps.br_bm];
         if (!td) return '';
+
         const cells = td.slots.map((v, i) => {
             if (v === null) return `<td class="cell-empty">—</td>`;
             const pct = v / td.registered;
             const delta = pct - td.expectedRates[i];
             return `<td class="${deviationClass(delta)}">${(pct * 100).toFixed(1)}%</td>`;
         }).join('');
+
+        let lastCell;
+        if (currentFilter === 'prioritet') {
+            const prio = ps.prioritet_lokalni || '—';
+            const color = PRIORITY_COLORS[prio] || 'var(--text-muted)';
+            lastCell = `<td style="font-weight:600;color:${color}">${prio}</td>`;
+        } else {
+            const ft = getFilteredTurnout(ps.br_bm);
+            if (ft.slotIndex < 0) {
+                lastCell = `<td class="cell-empty">—</td>`;
+            } else {
+                const dev = getFilteredDeviation(ps.br_bm);
+                const sign = dev >= 0 ? '+' : '';
+                const cls = dev >= 0 ? 'dev-cell positive' : 'dev-cell negative';
+                lastCell = `<td class="${cls}">${sign}${(dev * 100).toFixed(1)}%</td>`;
+            }
+        }
+
         const hl = highlightedBm === ps.br_bm ? ' highlighted' : '';
         return `<tr data-bm="${ps.br_bm}" class="${isPinned ? 'pinned' : ''}${hl}" onmouseenter="onTableRowHover(${ps.br_bm})" onmouseleave="onTableRowLeave(${ps.br_bm})" onclick="onTableRowClick(${ps.br_bm})">
             <td onclick="event.stopPropagation();togglePin(${ps.br_bm})">${ps.br_bm}</td>
             <td title="${ps.naziv || ''}">${truncate(ps.naziv || '—', 22)}</td>
             <td>${td.registered.toLocaleString()}</td>
             ${cells}
+            ${lastCell}
         </tr>`;
     }
 
@@ -1097,7 +1682,7 @@
         if (pinnedBmIds.size > 0) {
             const pinned = munData.polling_stations.filter(ps => pinnedBmIds.has(ps.br_bm));
             html += pinned.map(ps => buildRowHtml(ps, true)).join('');
-            html += `<tr class="pin-separator"><td colspan="${3 + TIME_SLOTS.length}"></td></tr>`;
+            html += `<tr class="pin-separator"><td colspan="${4 + TIME_SLOTS.length}"></td></tr>`;
         }
 
         const unpinned = getUnpinnedStations();
@@ -1111,7 +1696,7 @@
     }
 
     function truncate(str, len) {
-        return str.length > len ? str.substring(0, len) + '…' : str;
+        return str.length > len ? str.substring(0, len) + '\u2026' : str;
     }
 
     function updatePageIndicator() {
@@ -1219,13 +1804,19 @@
         let totalRegistered = 0;
         let bmReporting = 0;
 
+        const targetSlot = currentFilter === 'presek' ? currentPresekSlot : getGlobalLatestSlot();
+
         munData.polling_stations.forEach(ps => {
             const td = turnoutData[ps.br_bm];
             if (!td) return;
             totalRegistered += td.registered;
-            const latest = getLatestTurnout(ps.br_bm);
-            totalVoted += latest.voted;
-            if (latest.slotIndex >= 0) bmReporting++;
+
+            const ft = getFilteredTurnout(ps.br_bm);
+            totalVoted += ft.voted;
+
+            if (targetSlot >= 0 && td.slots[targetSlot] !== null) {
+                bmReporting++;
+            }
         });
 
         const pct = totalRegistered > 0 ? totalVoted / totalRegistered : 0;
@@ -1241,13 +1832,24 @@
 
         const latestSlotIdx = getGlobalLatestSlot();
         if (latestSlotIdx >= 0 && EXPECTED_CURVE[latestSlotIdx] > 0) {
-            const currentRate = pct;
+            const latestPct = getGlobalTurnoutAtSlot(latestSlotIdx);
             const curveRatio = EXPECTED_CURVE[EXPECTED_CURVE.length - 1] / EXPECTED_CURVE[latestSlotIdx];
-            const projected = Math.min(currentRate * curveRatio, 0.95);
+            const projected = Math.min(latestPct * curveRatio, 0.95);
             document.getElementById('projectedPct').textContent = (projected * 100).toFixed(1) + '%';
         }
 
-        renderSparkline(pct);
+        renderSparkline();
+    }
+
+    function getGlobalTurnoutAtSlot(slotIdx) {
+        let voted = 0, registered = 0;
+        munData.polling_stations.forEach(ps => {
+            const td = turnoutData[ps.br_bm];
+            if (!td) return;
+            registered += td.registered;
+            if (td.slots[slotIdx] !== null) voted += td.slots[slotIdx];
+        });
+        return registered > 0 ? voted / registered : 0;
     }
 
     function getGlobalLatestSlot() {
@@ -1327,10 +1929,7 @@
         ctx.lineWidth = 1;
         for (let i = 0; i <= 4; i++) {
             const y = pad.top + (i / 4) * chartH;
-            ctx.beginPath();
-            ctx.moveTo(pad.left, y);
-            ctx.lineTo(W - pad.right, y);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
         }
 
         ctx.fillStyle = '#64748b';
@@ -1349,7 +1948,6 @@
 
         let totalRegistered = 0;
         munData.polling_stations.forEach(ps => { totalRegistered += (turnoutData[ps.br_bm]?.registered || 0); });
-
         const latestSlot = getGlobalLatestSlot();
 
         ctx.setLineDash([4, 3]);
@@ -1400,49 +1998,10 @@
         ctx.fillStyle = '#94a3b8';
         ctx.textAlign = 'left';
         ctx.fillText('Stvarna', W - 98, 12);
-
         ctx.fillStyle = '#475569';
         ctx.fillRect(W - 60, 4, 8, 8);
         ctx.fillStyle = '#94a3b8';
         ctx.fillText('Očekivana', W - 48, 12);
-    }
-
-    // ============================================
-    // ALERTS
-    // ============================================
-
-    function renderAlerts() {
-        const deviations = munData.polling_stations.map(ps => ({
-            bmId: ps.br_bm,
-            name: ps.naziv || 'BM ' + ps.br_bm,
-            delta: getDeviation(ps.br_bm),
-            hasData: getLatestTurnout(ps.br_bm).slotIndex >= 0
-        })).filter(d => d.hasData);
-
-        deviations.sort((a, b) => a.delta - b.delta);
-
-        const container = document.getElementById('alertsList');
-        const itemH = 24;
-        const availableH = container.parentElement.clientHeight - 28;
-        const maxItems = Math.max(4, Math.floor(availableH / itemH));
-        const half = Math.floor(maxItems / 2);
-
-        const worst = deviations.slice(0, half);
-        const best = deviations.slice(-half).reverse();
-
-        container.innerHTML = [
-            ...worst.map(d => alertHTML(d, 'negative')),
-            ...best.map(d => alertHTML(d, 'positive'))
-        ].join('');
-    }
-
-    function alertHTML(d, type) {
-        const sign = d.delta >= 0 ? '+' : '';
-        return `<div class="alert-item ${type}">
-            <span class="alert-bm">${d.bmId}</span>
-            <span class="alert-name" title="${d.name}">${truncate(d.name, 20)}</span>
-            <span class="alert-delta ${type}">${sign}${(d.delta * 100).toFixed(1)}%</span>
-        </div>`;
     }
 
     // ============================================
@@ -1454,7 +2013,7 @@
     }
 
     function handleKeyDown(e) {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
         if (e.ctrlKey || e.metaKey || e.altKey) return;
 
         const key = e.key;
@@ -1483,6 +2042,13 @@
             if (numBuffer) return;
             e.preventDefault();
             toggleTrendOverlay();
+            return;
+        }
+
+        if (key === 'm' || key === 'M') {
+            if (numBuffer) return;
+            e.preventDefault();
+            toggleTerrain();
             return;
         }
 
@@ -1589,7 +2155,11 @@
 
     function deselectBm() {
         if (highlightedBm) {
-            highlightBm(null);
+            const prev = highlightedBm;
+            highlightedBm = null;
+            if (bmLayers[prev] && bmLayers[prev].setStyle) {
+                bmLayers[prev].setStyle({ weight: 2, color: '#94a3b8', opacity: 0.9 });
+            }
             document.querySelectorAll('.turnout-table tbody tr.highlighted').forEach(r => r.classList.remove('highlighted'));
         }
     }
@@ -1609,11 +2179,8 @@
         const lats = [], lngs = [];
         Object.values(bmLayers).forEach(layer => {
             let ll;
-            if (layer.getBounds) {
-                ll = layer.getBounds().getCenter();
-            } else if (layer.getLatLng) {
-                ll = layer.getLatLng();
-            }
+            if (layer.getBounds) ll = layer.getBounds().getCenter();
+            else if (layer.getLatLng) ll = layer.getLatLng();
             if (ll) { lats.push(ll.lat); lngs.push(ll.lng); }
         });
         if (!lats.length) return;
@@ -1657,10 +2224,7 @@
         ctx.lineWidth = 1;
         for (let i = 0; i <= 8; i++) {
             const y = pad.top + (i / 8) * chartH;
-            ctx.beginPath();
-            ctx.moveTo(pad.left, y);
-            ctx.lineTo(W - pad.right, y);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
         }
 
         ctx.fillStyle = '#94a3b8';
@@ -1713,7 +2277,7 @@
             }
             ctx.stroke();
 
-            points.forEach((p, i) => {
+            points.forEach(p => {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
                 ctx.fillStyle = '#3b82f6';
