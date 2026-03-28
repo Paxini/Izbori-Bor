@@ -17,7 +17,7 @@ Baza zahteva autentifikaciju (`auth != null`). Pre slanja podataka, potrebno je 
 ### Korak 1 — Dobijanje tokena
 
 ```
-POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBB2yq4b2lLGhI8PMD7NuXkUa6qRHO1FoM
+POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=<YOUR_FIREBASE_API_KEY>
 Content-Type: application/json
 
 {
@@ -125,7 +125,7 @@ DELETE https://izbori-bor-2026-default-rtdb.europe-west1.firebasedatabase.app/tu
 ```bash
 # 1. Dobijanje tokena
 TOKEN=$(curl -s -X POST \
-  'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBB2yq4b2lLGhI8PMD7NuXkUa6qRHO1FoM' \
+  'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=<YOUR_FIREBASE_API_KEY>' \
   -H 'Content-Type: application/json' \
   -d '{"email":"korisnik@example.com","password":"lozinka","returnSecureToken":true}' \
   | python -c "import sys,json; print(json.load(sys.stdin)['idToken'])")
@@ -141,7 +141,7 @@ curl -X PUT \
 ```python
 import requests
 
-API_KEY = "AIzaSyBB2yq4b2lLGhI8PMD7NuXkUa6qRHO1FoM"
+API_KEY = "<YOUR_FIREBASE_API_KEY>"
 DB_URL = "https://izbori-bor-2026-default-rtdb.europe-west1.firebasedatabase.app"
 EMAIL = "korisnik@example.com"
 PASSWORD = "lozinka"
