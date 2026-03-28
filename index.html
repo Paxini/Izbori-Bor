@@ -1377,11 +1377,7 @@
     function onIncidentClick(bmId) {
         highlightBm(bmId);
         scrollTableToBm(bmId);
-        if (bmLayers[bmId]) {
-            const layer = bmLayers[bmId];
-            if (layer.getBounds) electionMap.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 16 });
-            else if (layer.getLatLng) electionMap.setView(layer.getLatLng(), 15);
-        }
+        zoomToBm(bmId);
     }
 
     function switchAlertsTab(tab) {
@@ -2035,16 +2031,20 @@
         }
     }
 
+    function zoomToBm(bmId) {
+        const layer = bmLayers[bmId];
+        if (layer && layer.getBounds) {
+            electionMap.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 16 });
+        } else if (layer && layer.getLatLng) {
+            electionMap.setView(layer.getLatLng(), 15);
+        } else if (bmCircleMarkers[bmId]) {
+            electionMap.setView(bmCircleMarkers[bmId].getLatLng(), 15);
+        }
+    }
+
     function onTableRowClick(bmId) {
         highlightBm(bmId);
-        if (bmLayers[bmId]) {
-            const layer = bmLayers[bmId];
-            if (layer.getBounds) {
-                electionMap.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 16 });
-            } else if (layer.getLatLng) {
-                electionMap.setView(layer.getLatLng(), 15);
-            }
-        }
+        zoomToBm(bmId);
     }
 
     // ============================================
@@ -2409,11 +2409,7 @@
         if (!bmId || !turnoutData[bmId]) return;
         highlightBm(bmId);
         scrollTableToBm(bmId);
-        if (bmLayers[bmId]) {
-            const layer = bmLayers[bmId];
-            if (layer.getBounds) electionMap.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 16 });
-            else if (layer.getLatLng) electionMap.setView(layer.getLatLng(), 15);
-        }
+        zoomToBm(bmId);
     }
 
     function clearNumBuffer() {
