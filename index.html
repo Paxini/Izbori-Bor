@@ -2117,6 +2117,8 @@
             const curveRatio = EXPECTED_CURVE[EXPECTED_CURVE.length - 1] / EXPECTED_CURVE[latestSlotIdx];
             const projected = Math.min(latestPct * curveRatio, 0.95);
             document.getElementById('projectedPct').textContent = (projected * 100).toFixed(1) + '%';
+        } else {
+            document.getElementById('projectedPct').textContent = '—';
         }
 
         renderSparkline();
