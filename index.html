@@ -1185,23 +1185,43 @@
 
     async function fetchApiData() {
         try {
+            console.log('[API] Fetching:', API_URL);
             const resp = await fetch(API_URL, {
                 headers: { 'Authorization': API_AUTH }
             });
-            if (!resp.ok) return;
+            console.log('[API] Response status:', resp.status, resp.statusText);
+            if (!resp.ok) {
+                console.error('[API] Bad response:', resp.status, resp.statusText);
+                return;
+            }
             const data = await resp.json();
+            console.log('[API] Data received:', JSON.stringify(data).substring(0, 500));
 
             const stations = [];
             if (data.settlements) {
                 data.settlements.forEach(s => {
                     if (s.stations) stations.push(...s.stations);
                 });
+            } else if (Array.isArray(data)) {
+                data.forEach(item => {
+                    if (item.stations) stations.push(...item.stations);
+                    else if (item.code) stations.push(item);
+                });
+            }
+            console.log('[API] Stations found:', stations.length);
+            if (stations.length > 0) {
+                console.log('[API] Sample station:', JSON.stringify(stations[0]).substring(0, 300));
             }
 
             let totalIncidents = 0;
+            let matchedStations = 0;
             stations.forEach(st => {
-                const match = st.code && st.code.match(/_(\d+)$/);
-                if (!match) return;
+                const match = st.code && st.code.match(/(\d+)$/);
+                if (!match) {
+                    console.log('[API] No code match for station:', st.code || st);
+                    return;
+                }
+                matchedStations++;
                 const bmId = parseInt(match[1]);
                 const ti = (st.turnout && st.turnout.incidents) || 0;
                 const ri = (st.results && st.results.incidents) || 0;
@@ -1209,10 +1229,12 @@
                 incidentsData[bmId] = { turnoutIncidents: ti, resultsIncidents: ri, total: count };
                 totalIncidents += count;
             });
+            console.log('[API] Matched stations:', matchedStations, '| Total incidents:', totalIncidents);
 
             updateIncidentsUI(totalIncidents);
         } catch (e) {
-            console.warn('API fetch failed:', e);
+            console.error('[API] Fetch failed:', e.message || e);
+            console.error('[API] This may be a CORS issue. Check if api.izbor.org allows requests from this origin.');
         }
     }
 
