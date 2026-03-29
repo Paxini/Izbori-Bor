@@ -1222,11 +1222,11 @@
                 console.log('[API] Sample station:', JSON.stringify(stations[0]).substring(0, 300));
             }
 
-            // Map API hourly indices to dashboard TIME_SLOTS
-            // turnout_by_hour has 14 entries for hours 7:00-20:00
-            // TIME_SLOTS = ['09:00','11:00','13:00','15:00','17:00','19:00']
-            // → indices 2, 4, 6, 8, 10, 12 in turnout_by_hour
-            const HOUR_TO_SLOT = [2, 4, 6, 8, 10, 12];
+            // Map API turnout_by_hour to dashboard TIME_SLOTS
+            // turnout_by_hour is [{hour:"08",value:0},{hour:"09",value:100},...]
+            // Values are per-hour, not cumulative. For each TIME_SLOT we sum all hours up to that slot.
+            // 09:00 → sum 08+09, 11:00 → sum 08..11, 13:00 → sum 08..13, etc.
+            const SLOT_END_HOURS = ['09', '11', '13', '15', '17', '19'];
 
             let totalIncidents = 0;
             let matchedStations = 0;
@@ -1250,11 +1250,23 @@
                 // Extract turnout data from API (stored separately to survive Firebase resets)
                 if (st.turnout && st.turnout.turnout_by_hour && turnoutData[bmId]) {
                     const hours = st.turnout.turnout_by_hour;
+                    // Build a lookup: hour string → value
+                    const hourMap = {};
+                    hours.forEach(h => { if (h && h.hour != null) hourMap[h.hour] = h.value || 0; });
+
                     if (!apiTurnoutSlots[bmId]) apiTurnoutSlots[bmId] = new Array(TIME_SLOTS.length).fill(null);
-                    for (let s = 0; s < TIME_SLOTS.length; s++) {
-                        const hourIdx = HOUR_TO_SLOT[s];
-                        if (hourIdx < hours.length && hours[hourIdx] != null) {
-                            apiTurnoutSlots[bmId][s] = hours[hourIdx];
+                    let cumulative = 0;
+                    let hasAnyData = false;
+                    // Walk hours 08..19, accumulate, and snapshot at each TIME_SLOT boundary
+                    for (let hr = 8; hr <= 19; hr++) {
+                        const hrKey = String(hr).padStart(2, '0');
+                        if (hourMap[hrKey] != null) {
+                            cumulative += hourMap[hrKey];
+                            hasAnyData = true;
+                        }
+                        const slotIdx = SLOT_END_HOURS.indexOf(hrKey);
+                        if (slotIdx >= 0 && hasAnyData) {
+                            apiTurnoutSlots[bmId][slotIdx] = cumulative;
                             turnoutUpdated++;
                         }
                     }
