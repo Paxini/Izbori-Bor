@@ -1221,8 +1221,15 @@
                 console.log('[API] Sample station:', JSON.stringify(stations[0]).substring(0, 300));
             }
 
+            // Map API hourly indices to dashboard TIME_SLOTS
+            // turnout_by_hour has 14 entries for hours 7:00-20:00
+            // TIME_SLOTS = ['09:00','11:00','13:00','15:00','17:00','19:00']
+            // → indices 2, 4, 6, 8, 10, 12 in turnout_by_hour
+            const HOUR_TO_SLOT = [2, 4, 6, 8, 10, 12];
+
             let totalIncidents = 0;
             let matchedStations = 0;
+            let turnoutUpdated = 0;
             stations.forEach(st => {
                 const match = st.code && st.code.match(/(\d+)$/);
                 if (!match) {
@@ -1231,15 +1238,30 @@
                 }
                 matchedStations++;
                 const bmId = parseInt(match[1]);
+
+                // Extract incidents
                 const ti = (st.turnout && st.turnout.incidents) || 0;
                 const ri = (st.results && st.results.incidents) || 0;
                 const count = Math.max(ti, ri);
                 incidentsData[bmId] = { turnoutIncidents: ti, resultsIncidents: ri, total: count };
                 totalIncidents += count;
+
+                // Extract turnout data from API into turnoutData slots
+                if (st.turnout && st.turnout.turnout_by_hour && turnoutData[bmId]) {
+                    const hours = st.turnout.turnout_by_hour;
+                    for (let s = 0; s < TIME_SLOTS.length; s++) {
+                        const hourIdx = HOUR_TO_SLOT[s];
+                        if (hourIdx < hours.length && hours[hourIdx] != null) {
+                            turnoutData[bmId].slots[s] = hours[hourIdx];
+                            turnoutUpdated++;
+                        }
+                    }
+                }
             });
-            console.log('[API] Matched stations:', matchedStations, '| Total incidents:', totalIncidents);
+            console.log('[API] Matched stations:', matchedStations, '| Total incidents:', totalIncidents, '| Turnout slots updated:', turnoutUpdated);
 
             updateIncidentsUI(totalIncidents);
+            if (turnoutUpdated > 0) refreshAll();
         } catch (e) {
             console.error('[API] Fetch failed:', e.message || e);
             console.error('[API] This may be a CORS issue. Check if api.izbor.org allows requests from this origin.');
