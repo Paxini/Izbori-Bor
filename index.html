@@ -1028,6 +1028,7 @@
     let locationsData = null;
     let expectedData = {};
     let turnoutData = {};
+    let apiTurnoutSlots = {};
     let electionMap = null;
     let geojsonLayer = null;
     let bmLayers = {};
@@ -1246,13 +1247,14 @@
                 incidentsData[bmId] = { turnoutIncidents: ti, resultsIncidents: ri, total: count };
                 totalIncidents += count;
 
-                // Extract turnout data from API into turnoutData slots
+                // Extract turnout data from API (stored separately to survive Firebase resets)
                 if (st.turnout && st.turnout.turnout_by_hour && turnoutData[bmId]) {
                     const hours = st.turnout.turnout_by_hour;
+                    if (!apiTurnoutSlots[bmId]) apiTurnoutSlots[bmId] = new Array(TIME_SLOTS.length).fill(null);
                     for (let s = 0; s < TIME_SLOTS.length; s++) {
                         const hourIdx = HOUR_TO_SLOT[s];
                         if (hourIdx < hours.length && hours[hourIdx] != null) {
-                            turnoutData[bmId].slots[s] = hours[hourIdx];
+                            apiTurnoutSlots[bmId][s] = hours[hourIdx];
                             turnoutUpdated++;
                         }
                     }
@@ -1260,12 +1262,27 @@
             });
             console.log('[API] Matched stations:', matchedStations, '| Total incidents:', totalIncidents, '| Turnout slots updated:', turnoutUpdated);
 
+            // Merge API turnout into turnoutData (Firebase data takes priority)
+            mergeApiTurnout();
             updateIncidentsUI(totalIncidents);
             if (turnoutUpdated > 0) refreshAll();
         } catch (e) {
             console.error('[API] Fetch failed:', e.message || e);
             console.error('[API] This may be a CORS issue. Check if api.izbor.org allows requests from this origin.');
         }
+    }
+
+    function mergeApiTurnout() {
+        Object.keys(apiTurnoutSlots).forEach(bmId => {
+            const id = parseInt(bmId);
+            if (!turnoutData[id]) return;
+            for (let s = 0; s < TIME_SLOTS.length; s++) {
+                // Only fill from API if Firebase hasn't provided data for this slot
+                if (turnoutData[id].slots[s] === null && apiTurnoutSlots[bmId][s] != null) {
+                    turnoutData[id].slots[s] = apiTurnoutSlots[bmId][s];
+                }
+            }
+        });
     }
 
     function updateIncidentsUI(totalIncidents) {
@@ -1325,6 +1342,7 @@
             Object.values(turnoutData).forEach(td => { td.slots.fill(null); });
 
             if (!data) {
+                mergeApiTurnout();
                 refreshAll();
                 return;
             }
@@ -1341,6 +1359,8 @@
                 }
             });
 
+            // Re-apply API data for slots Firebase didn't fill
+            mergeApiTurnout();
             refreshAll();
         });
 
