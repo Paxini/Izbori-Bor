@@ -1026,6 +1026,7 @@
     let munData = null;
     let geojsonData = null;
     let locationsData = null;
+    let expectedData = {};
     let turnoutData = {};
     let electionMap = null;
     let geojsonLayer = null;
@@ -1123,7 +1124,7 @@
             if (!resp.ok) throw new Error('Podaci nisu pronađeni');
             munData = await resp.json();
 
-            await Promise.all([loadGeoJSON(), loadLocations()]);
+            await Promise.all([loadGeoJSON(), loadLocations(), loadExpectedData()]);
 
             initTurnoutData();
             setupFirebaseSync();
@@ -1177,6 +1178,13 @@
             const resp = await fetch('data/locations.json');
             if (resp.ok) locationsData = await resp.json();
         } catch (e) { /* Locations not available */ }
+    }
+
+    async function loadExpectedData() {
+        try {
+            const resp = await fetch('data/expected.json');
+            if (resp.ok) expectedData = await resp.json();
+        } catch (e) { /* Expected data not available */ }
     }
 
     // ============================================
@@ -1254,10 +1262,11 @@
             const registered = ps.biraci || 500;
             const maxEst = ps.max_procena || registered * 0.6;
             const expectedFinalRate = Math.min(maxEst / registered, 0.85);
+            const bmExpected = expectedData[String(ps.br_bm)];
             turnoutData[ps.br_bm] = {
                 slots: new Array(TIME_SLOTS.length).fill(null),
                 registered,
-                expectedRates: EXPECTED_CURVE.map(c => c * expectedFinalRate),
+                expectedRates: bmExpected || EXPECTED_CURVE.map(c => c * expectedFinalRate),
                 expectedFinalRate
             };
         });
